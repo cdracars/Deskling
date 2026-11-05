@@ -13,7 +13,7 @@ Required fields:
 - `name`: display text, up to 128 characters.
 - `spriteSheet`: PNG basename in the same directory. Paths, URLs and symlinks resolving outside that directory are rejected.
 - `cellWidth`, `cellHeight`: integer pixels, 16–512 each. All frames use this cell size.
-- `animations`: 1–32 entries. Each has a unique lowercase `id`, display `label`, zero-based `row` (0–255), `frames` (1–64) and integer `fps` (1–30). Frames start at column zero on each row. Every referenced cell must fit the actual PNG.
+- `animations`: 1–32 entries. Each has a unique lowercase `id`, display `label`, zero-based `row` (0–255), `frames` (1–64) and integer `fps` (1–60). Frames start at column zero on each row. Every referenced cell must fit the actual PNG.
 - `idle`: an existing animation ID.
 
 Optional fields:
@@ -23,6 +23,8 @@ Optional fields:
 - `author` and `license`, or those same string fields under `metadata`: provenance supplied by the pack author. The engine does not verify or infer rights from them.
 
 Unknown fields and invalid numeric types are rejected. Display text cannot contain control characters or rich-text angle brackets. Manifest size is limited to 64 KiB. PNG data is limited to 16 MiB, 16384 pixels on either side and 16777216 total pixels. The loader checks the PNG signature/dimensions before decoding, then requires a successful full decode.
+
+Frame rate is a requested rate, not a real-time guarantee. The loader rounds `1000 / fps` to whole milliseconds: 40 fps requests 25 ms per frame, and 60 fps requests 17 ms. For example, a 24-frame blink at 40 fps targets 600 ms before returning to idle. Qt timer resolution, display refresh and system load can make actual playback slower. Existing packs at 1–30 fps keep their previous intervals, and all image-size and frame-count limits remain unchanged.
 
 Transparent padding is needed for a shaped desktop character. The smoke test pauses on the idle animation's first frame and requires at least one visibly opaque pixel and one fully transparent pixel in its rendered item. A fully blank or fully opaque first frame will fail that test even if the file is otherwise a valid PNG.
 

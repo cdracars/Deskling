@@ -21,6 +21,8 @@ constexpr qint64 ManifestLimit = 64 * 1024;
 constexpr qint64 ImageLimit = 16 * 1024 * 1024;
 constexpr qint64 PixelLimit = 16 * 1024 * 1024;
 constexpr int DimensionLimit = 16384;
+// Keep requested animation rates bounded; actual timer delivery is best-effort.
+constexpr int MaximumFps = 60;
 
 bool fail(QString &error, const QString &message) { error = message; return false; }
 bool keys(const QJsonObject &o, const QSet<QString> &allowed, const QString &where, QString &error) {
@@ -154,7 +156,7 @@ bool loadCharacterPack(const QString &manifestPath, QVariantMap &pack, QString &
         int row, frames, fps;
         if (!textField(a, "id", 64, animationId, error) || !textField(a, "label", 128, label, error) ||
             !integer(a, "row", 0, 255, row, error) || !integer(a, "frames", 1, 64, frames, error) ||
-            !integer(a, "fps", 1, 30, fps, error)) return false;
+            !integer(a, "fps", 1, MaximumFps, fps, error)) return false;
         if (!slug(animationId) || indices.contains(animationId))
             return fail(error, "Animation IDs must be unique lowercase slugs: " + animationId);
         if (frames * width > size.width() || (row + 1) * height > size.height())

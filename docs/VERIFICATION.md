@@ -6,7 +6,7 @@ This source branch is an early engine extraction, not a stable release. Read the
 
 - Python source/resource/schema checks and optional Node execution of extracted QML scheduler helpers.
 - Rust core and C ABI boundary tests.
-- Native QtCore/QtGui pack-loader tests using temporary generated invalid-input fixtures and the included Cyber Gremlin pack. The real pack's eight cells are checked for visible pixels, transparent padding, and distinct pixel data.
+- Native QtCore/QtGui pack-loader tests using temporary generated invalid-input fixtures and the included Cyber Gremlin pack. Frame-rate fixtures cover 1, 30, 31, 40 and 60 fps, reject values above 60 and invalid numeric types, and load a synthetic 24-frame animation at 40 fps. The real pack's eight cells are checked for visible pixels, transparent padding, and distinct pixel data.
 - A release build and offscreen item-rendering smoke tests for both the diagnostic shape and the gremlin's first idle frame, each with detailed pixel/format diagnostics and a five-second total deadline.
 
 The development workspace could execute Python/Node checks and source review but did not have Rust or Qt development tools. Native build, loader tests and smoke verification are delegated to CI/target runs, and must not be described as passed without their actual results.

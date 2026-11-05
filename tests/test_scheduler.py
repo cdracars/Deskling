@@ -71,6 +71,25 @@ for (const b of automaticBehaviors) {
 }
 """)
 
+    def test_high_rate_24_frame_preview_is_bounded(self):
+        self.js("""
+frameCounts[2] = 24; frameIntervals[2] = 25;
+chooseAnimation(2);
+let nominalElapsed = 0;
+for (let i = 1; i < 24; ++i) {
+  nominalElapsed += frameIntervals[activeAnimation]; advanceAnimation();
+  assert.equal(activeAnimation, 2);
+  assert.equal(frame, i);
+  assert.equal(gestureLoopsRemaining, 1);
+}
+nominalElapsed += frameIntervals[activeAnimation]; advanceAnimation();
+assert.equal(nominalElapsed, 600);
+assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(frame, 0);
+assert.equal(gestureLoopsRemaining, 0);
+assert(autonomous);
+""")
+
     def test_pause_and_hide_freeze_state(self):
         self.js("""
 startGesture(2, 2);

@@ -57,6 +57,26 @@ int main(int argc, char **argv) {
           pack.value("dragLeftIndex").toInt() == 0, "interaction indices and fallback");
     check(pack.value("animations").toList()[1].toMap().value("intervalMs").toInt() == 50, "fps conversion");
     check(pack.value("behaviors").toList()[0].toMap().value("animation").toInt() == 1, "behavior index");
+    // Existing intervals stay compatible; new rates remain bounded and nonzero.
+    const int fpsCases[][2] = {{1, 1000}, {30, 33}, {31, 32}, {40, 25}, {60, 17}};
+    for (const auto &test : fpsCases) {
+        auto r = valid(); auto entries = r["animations"].toArray(); auto a = entries[1].toObject();
+        a["fps"] = test[0]; entries[1] = a; r["animations"] = entries; run(r, true);
+        check(pack.value("animations").toList()[1].toMap().value("intervalMs").toInt() == test[1],
+              "bounded fps conversion and backwards compatibility");
+    }
+    // A generated fixture proves 24 frames at 40 fps load without private art.
+    QImage longSheet(24 * 16, 32, QImage::Format_RGBA8888);
+    longSheet.fill(Qt::transparent);
+    check(longSheet.save(dir.filePath("sheet.png"), "PNG"), "save 24-frame fixture");
+    {
+        auto r = valid(); auto entries = r["animations"].toArray(); auto a = entries[1].toObject();
+        a["frames"] = 24; a["fps"] = 40; entries[1] = a; r["animations"] = entries; run(r, true);
+        const auto highRate = pack.value("animations").toList()[1].toMap();
+        check(highRate.value("frames").toInt() == 24 && highRate.value("intervalMs").toInt() == 25,
+              "24-frame 40 fps animation loads");
+    }
+    check(sheet.save(dir.filePath("sheet.png"), "PNG"), "restore small PNG after high-rate test");
     for (const QString &bad : {QString("../sheet.png"), QString("https://host/sheet.png"),
                               QString("sub\\sheet.png"), QString("missing.png")}) {
         auto root = valid(); root["spriteSheet"] = bad; run(root, false);
@@ -92,7 +112,9 @@ int main(int argc, char **argv) {
     changeAnimation("frames", 3);
     changeAnimation("frames", 65);
     changeAnimation("fps", 0);
-    changeAnimation("fps", 31);
+    changeAnimation("fps", 61);
+    changeAnimation("fps", 40.5);
+    changeAnimation("fps", "40");
     changeAnimation("fps", 2.5);
     changeAnimation("row", "1");
     root = valid(); root["animations"] = QJsonArray{}; run(root, false);
