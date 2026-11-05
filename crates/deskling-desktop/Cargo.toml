@@ -1,0 +1,11 @@
+[package]
+name = "deskling-desktop"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+build = "build.rs"
+publish = false
+license = "MIT"
+
+[dependencies]
+deskling-core = { path = "../deskling-core" }

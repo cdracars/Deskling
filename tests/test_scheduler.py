@@ -1,0 +1,111 @@
+"""Run the real QML scheduler helpers in Node, not a reimplemented model.
+
+This does not execute Qt bindings, rendering, or input. Node is optional.
+"""
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import unittest
+
+QML = (Path(__file__).resolve().parents[1] / "crates/deskling-desktop/qml/Main.qml").read_text()
+NODE = shutil.which("node")
+
+
+def source():
+    # Deliberately use a nonzero idle index to catch character-specific assumptions.
+    setup = """
+var characterPack = {
+  idleIndex: 1, waveIndex: 0,
+  animations: [
+    {frames: 4, intervalMs: 150}, {frames: 6, intervalMs: 180},
+    {frames: 3, intervalMs: 200}, {frames: 5, intervalMs: 130}
+  ],
+  behaviors: [{animation: 0, loops: 1, weight: 2}, {animation: 2, loops: 2, weight: 3}]
+};
+var visible = true;
+"""
+    names = ("paused", "selectedAnimation", "activeAnimation", "frame", "dragging", "waving",
+             "animations", "frameCounts", "frameIntervals", "automaticBehaviors", "autonomous",
+             "gestureLoopsRemaining", "automaticWaitMs")
+    for name in names:
+        expression = re.search(r"(?:readonly )?property \w+ " + name + r": (.*)", QML).group(1)
+        if expression == "{":
+            body = QML.split("property var " + name + ": {", 1)[1].split("\n    }", 1)[0]
+            expression = "(function(){" + body + "})()"
+        setup += "var " + name + " = " + expression + ";\n"
+    helpers = QML.split("    function randomWait(first) {", 1)[1].split("    function showControls()", 1)[0]
+    return setup + "function randomWait(first) {" + helpers
+
+
+class WiringTests(unittest.TestCase):
+    def test_timer_binding_and_no_automatic_system_actions(self):
+        self.assertIn("running: !pet.paused && pet.visible", QML)
+        self.assertIn("onTriggered: pet.advanceAnimation()", QML)
+        self.assertNotIn("animationClock.restart", QML)
+        for token in ("bridge.", "requestActivate", ".raise(", "keyboard"):
+            self.assertNotIn(token, source())
+
+
+@unittest.skipUnless(NODE, "Node unavailable; JavaScript behavior tests skipped")
+class SchedulerTests(unittest.TestCase):
+    def js(self, body):
+        result = subprocess.run([NODE, "-e", "const assert = require('assert');\n" + source() + body], text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_wait_bounds(self):
+        self.js("""
+assert(automaticWaitMs >= 5000 && automaticWaitMs <= 10000);
+Math.random = () => 0; assert.equal(randomWait(false), 20000);
+Math.random = () => 0.999999; assert.equal(randomWait(false), 45000);
+""")
+
+    def test_every_behavior_returns_pack_idle(self):
+        self.js("""
+for (const b of automaticBehaviors) {
+  startGesture(b.animation, b.loops);
+  for (let i = 0; i < frameCounts[b.animation] * b.loops; ++i) advanceAnimation();
+  assert.equal(activeAnimation, characterPack.idleIndex);
+  assert.equal(gestureLoopsRemaining, 0);
+  assert(automaticWaitMs >= 20000);
+}
+""")
+
+    def test_pause_and_hide_freeze_state(self):
+        self.js("""
+startGesture(2, 2);
+const before = [frame, gestureLoopsRemaining, automaticWaitMs];
+paused = true; for (let i = 0; i < 100; ++i) advanceAnimation();
+assert.deepEqual([frame, gestureLoopsRemaining, automaticWaitMs], before);
+paused = false; visible = false; advanceAnimation();
+assert.deepEqual([frame, gestureLoopsRemaining, automaticWaitMs], before);
+""")
+
+    def test_manual_wave_and_reenable(self):
+        self.js("""
+chooseAnimation(2); assert(!autonomous);
+wave(); assert.equal(activeAnimation, characterPack.waveIndex);
+for (let i = 0; i < frameCounts[characterPack.waveIndex]; ++i) advanceAnimation();
+assert.equal(activeAnimation, 2);
+setAutonomous(true); assert.equal(activeAnimation, characterPack.idleIndex);
+""")
+
+    def test_drag_preempts_and_suppresses_automatic_start(self):
+        self.js("""
+startGesture(2, 2); beginGestureDrag(); automaticWaitMs = 1;
+for (let i = 0; i < 100; ++i) advanceAnimation();
+assert.equal(gestureLoopsRemaining, 0); assert.equal(automaticWaitMs, 1);
+dragging = false; returnToBase(); assert.equal(activeAnimation, characterPack.idleIndex);
+assert(automaticWaitMs >= 20000);
+""")
+
+    def test_empty_behavior_list_stays_idle(self):
+        self.js("""
+automaticBehaviors = []; automaticWaitMs = 0; startAutomaticGesture();
+assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(gestureLoopsRemaining, 0); assert(automaticWaitMs >= 20000);
+""")
+
+
+if __name__ == "__main__":
+    unittest.main()

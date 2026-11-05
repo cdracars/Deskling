@@ -1,0 +1,8 @@
+[workspace]
+members = ["crates/deskling-core", "crates/deskling-desktop"]
+default-members = ["crates/deskling-desktop"]
+resolver = "2"
+
+[profile.release]
+lto = "thin"
+strip = true

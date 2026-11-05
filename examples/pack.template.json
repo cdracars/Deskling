@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "my-character",
+  "name": "My character",
+  "spriteSheet": "sprites.png",
+  "cellWidth": 128,
+  "cellHeight": 160,
+  "idle": "idle",
+  "animations": [
+    {"id": "idle", "label": "Idle", "row": 0, "frames": 6, "fps": 6},
+    {"id": "wave", "label": "Wave", "row": 1, "frames": 4, "fps": 7}
+  ],
+  "interactions": {"wave": "wave"},
+  "behaviors": [{"animation": "wave", "loops": 1, "weight": 1}]
+}

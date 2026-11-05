@@ -1,0 +1,27 @@
+name: Build and test
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  linux-qt:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies on the disposable runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cargo rustc build-essential pkg-config python3 nodejs \
+            qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
+            qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtquick-controls \
+            qml6-module-qtquick-layouts qml6-module-qtquick-templates \
+            qml6-module-qtqml qml6-module-qtqml-models qml6-module-qtqml-workerscript
+      - name: Versions
+        run: |
+          rustc --version
+          cargo --version
+          pkg-config --modversion Qt6Core Qt6Quick
+      - name: Verify source, core, packs, build and rendered item
+        run: sh scripts/verify.sh
