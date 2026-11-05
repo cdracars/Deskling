@@ -5,6 +5,7 @@ This source branch is an early engine extraction, not a stable release. Read the
 ## Automated checks
 
 - Python source/resource/schema checks and optional Node execution of extracted QML scheduler helpers.
+- PNG dimensions and Linux desktop-entry/application identity checks for the Kipwick icon. The original master is preserved, and the Qt resource graph includes the eight icon exports plus QML, not a runtime character pack. The smoke test verifies the embedded icon sizes reach the Qt window.
 - Rust core and C ABI boundary tests.
 - Native QtCore/QtGui pack-loader tests using temporary generated invalid-input fixtures and the included Cyber Gremlin study and Kipwick alpha pack. Frame-rate fixtures cover 1, 30, 31, 40 and 60 fps, reject values above 60 and invalid numeric types, and load a synthetic 24-frame animation at 40 fps. The earlier study's eight cells are checked for visible pixels, transparent padding, and distinct pixel data. Kipwick adds actual decoding of its large atlas and checks all 192 cells for visible pixels, clear tile edges, opaque torso cores and substantial distinct motion; wave head and feet must remain pixel-identical.
 - A release build and offscreen item-rendering smoke tests for the diagnostic shape, the earlier gremlin and Kipwick's first idle frame, each with detailed pixel/format diagnostics and a five-second total deadline.
@@ -22,5 +23,6 @@ The smoke test uses `QQuickItem::grabToImage()` because Qt 6.4's offscreen softw
 5. Load a valid user-supplied pack with different cell sizes and animation order. Confirm its idle/interaction mappings and row crops. Invalid/missing/out-of-bounds packs must fail with an actionable error.
 6. Open/close controls repeatedly. Test keyboard shortcuts only in the appropriate focused window. Quitting should leave no companion process behind.
 7. Configure an ordinary HTTPS shortcut and verify the intended destination in your normal browser. Empty Save clears it. Confirm no provider connection or embedded login is implied.
+8. Check the Kipwick window icon wherever the window manager displays tool-window icons. If you install the optional launcher, check its app-menu icon at normal and HiDPI scale and launch it from outside the checkout. Taskbar, dock and Alt-Tab visibility remain subject to the existing Qt.Tool behavior.
 
 Report the OS, desktop/window manager, Qt version, scale factor, exact command and error text. Do not include cookies, credentials, tokens or private artwork unless intentionally sharing them with the recipient.

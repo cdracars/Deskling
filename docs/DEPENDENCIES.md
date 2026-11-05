@@ -6,7 +6,7 @@ Reviewed: 2026-11-05. This is a practical compliance record, not legal advice or
 
 Deskling's original Rust, C++ and QML source, including its code-drawn geometric test placeholder, is offered under the repository's MIT license. That license does **not** relicense Qt, language runtimes, system libraries, or externally supplied assets.
 
-This branch contains source and the selected public Deskling mascot artwork, including a first opt-in sprite pack. No Qt sources, runtime libraries, compiled releases, or fonts are bundled. Private personal artwork is excluded. The geometric placeholder remains a diagnostic fixture. The [static illustration](../assets/mascot/README.md) and [sprite pack](../assets/characters/cyber-gremlin/README.md) have separate provenance and reuse notices; neither is covered by the engine's MIT license. Additional assets need their own provenance and licensing review before inclusion.
+This repository contains source, public mascot artwork, two opt-in sprite packs, and the separately documented Kipwick application icon. No Qt sources, runtime libraries, compiled releases, or fonts are bundled. Private personal artwork is excluded. The geometric placeholder remains a diagnostic fixture. The [static illustration](../assets/mascot/README.md), [sprite packs](../assets/characters/cyber-gremlin/README.md) and [Kipwick icon](../assets/icons/README.md) have separate provenance and reuse notices; none is covered by the engine's MIT license. The icon exports are embedded when the app is built, so resolve their reuse terms before redistributing binaries containing them. Additional assets need their own provenance and licensing review before inclusion.
 
 ## Dependency inventory
 

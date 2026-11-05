@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Deskling
+Comment=A local X11 desktop character
+Exec=deskling-desktop
+TryExec=deskling-desktop
+Icon=deskling
+Terminal=false
+Categories=Utility;
+StartupNotify=false

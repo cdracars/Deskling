@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="/deskling">
     <file alias="Main.qml">../qml/Main.qml</file>
+    <file alias="icons/deskling-16.png">../../../assets/icons/hicolor/16x16/apps/deskling.png</file>
+    <file alias="icons/deskling-24.png">../../../assets/icons/hicolor/24x24/apps/deskling.png</file>
+    <file alias="icons/deskling-32.png">../../../assets/icons/hicolor/32x32/apps/deskling.png</file>
+    <file alias="icons/deskling-48.png">../../../assets/icons/hicolor/48x48/apps/deskling.png</file>
+    <file alias="icons/deskling-64.png">../../../assets/icons/hicolor/64x64/apps/deskling.png</file>
+    <file alias="icons/deskling-128.png">../../../assets/icons/hicolor/128x128/apps/deskling.png</file>
+    <file alias="icons/deskling-256.png">../../../assets/icons/hicolor/256x256/apps/deskling.png</file>
+    <file alias="icons/deskling-512.png">../../../assets/icons/hicolor/512x512/apps/deskling.png</file>
   </qresource>
 </RCC>
