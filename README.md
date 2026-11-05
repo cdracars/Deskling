@@ -16,6 +16,7 @@ A first [Cyber Gremlin animation preview](assets/characters/cyber-gremlin/README
 - Local JSON + PNG character packs with strict validation and bounded animation behavior.
 - Mostly idle, with occasional short weighted gestures. Manual selection and pause remain available.
 - Right-click controls, size and position persistence, and an optional explicit HTTPS browser shortcut.
+- Character size is 160 logical pixels high at 100%, independent of sprite resolution. Existing size percentages are preserved (75% = 120px, 200% = 320px); aspect ratio is retained.
 - No telemetry, account/session access, API keys, background activity monitoring, executable pack code, or remote asset loading.
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
@@ -69,7 +70,7 @@ See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is
 - Drag to move. Single-click plays the pack's wave interaction. Double-click opens your configured link.
 - Right-click opens controls. Quit is in that panel.
 - **Automatic behavior** is on when the pack has behaviors. The first action starts around 5–10 seconds later; subsequent idle gaps vary from 20–45 seconds. Actions are bounded by the pack's loop counts and return to its idle animation. Timing may be slower under load.
-- Choosing an animation manually disables automatic behavior. Re-enable the switch to return to automatic idle. Pause stops playback and its countdown.
+- Choosing an animation previews it once, then returns to idle. It never changes the Automatic behavior switch. Turn that switch off to keep only idle; pause stops all playback and its countdown.
 - Automatic behavior never moves the window, takes focus, or claims to represent an agent's activity.
 - Ctrl+O opens the configured link; Ctrl+comma opens controls; Ctrl+Q quits, while the character window is focused. Space pauses. Escape closes controls.
 - `--reset-position` recovers a window moved off-screen. Quit another running copy first; single-instance handling is not implemented.

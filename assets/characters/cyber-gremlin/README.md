@@ -43,8 +43,9 @@ existing settings are deleted.
 - A single click plays four wave poses at 5 fps, then returns to idle.
 - Automatic behavior favors blinks over waves, starts after about 5–10 seconds,
   and waits 20–45 seconds between later gestures. It does not move the window.
-- Right-click controls allow manual animation, pause and size selection. Choosing
-  an animation manually disables automatic behavior until it is re-enabled.
+- Right-click controls allow one-shot animation previews, pause and size
+  selection. A preview returns to idle and preserves the Automatic behavior
+  switch. Turn that switch off for idle only; pause stops all playback.
 
 The sheet is 1774 × 887 pixels, with four columns and two rows of 443 × 443
 cells. Two right-edge pixel columns and one bottom pixel row are unused padding. Row 0

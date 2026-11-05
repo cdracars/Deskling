@@ -8,8 +8,10 @@ Window {
     objectName: "desklingWindow"
     title: "Deskling · " + characterPack.name
     visible: true
-    width: Math.round(characterPack.cellWidth * bridge.petScale)
-    height: Math.round(characterPack.cellHeight * bridge.petScale)
+    // Artwork resolution must not determine the character's desktop footprint.
+    readonly property int baseHeight: 160
+    width: Math.round(characterPack.cellWidth / characterPack.cellHeight * pet.baseHeight * bridge.petScale)
+    height: Math.round(pet.baseHeight * bridge.petScale)
     color: "transparent"
     flags: Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
@@ -50,16 +52,17 @@ Window {
     function returnToBase() {
         waving = false
         gestureLoopsRemaining = 0
-        activeAnimation = autonomous ? characterPack.idleIndex : selectedAnimation
+        selectedAnimation = characterPack.idleIndex
+        activeAnimation = characterPack.idleIndex
         frame = 0
         resetQuietGap()
     }
     function setAutonomous(enabled) {
         autonomous = enabled
-        if (enabled) selectedAnimation = characterPack.idleIndex
         returnToBase()
     }
     function startGesture(index, loops) {
+        selectedAnimation = index
         activeAnimation = index
         frame = 0
         gestureLoopsRemaining = loops
@@ -104,9 +107,14 @@ Window {
         resetQuietGap()
     }
     function chooseAnimation(index) {
-        autonomous = false
-        selectedAnimation = index
-        returnToBase()
+        // Preview once without silently turning automatic behavior off.
+        // Idle remains the base whether automatic gestures are on or off.
+        if (index === characterPack.idleIndex) {
+            returnToBase()
+            return
+        }
+        resetQuietGap()
+        startGesture(index, 1)
     }
     function wave() {
         if (paused || dragging) return
@@ -304,7 +312,7 @@ Window {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: "Mostly idle, with occasional little gestures. Choosing an animation below turns this off."
+                    text: "Idle plays between occasional gestures. Picking an animation below previews it once, then returns to idle. Automatic behavior stays as set."
                     color: "#96a6ba"
                     wrapMode: Text.WordWrap
                     font.pixelSize: 12

@@ -16,8 +16,8 @@ The smoke test uses `QQuickItem::grabToImage()` because Qt 6.4's offscreen softw
 ## Manual desktop acceptance
 
 1. On a composited X11 desktop, check the diagnostic shape has no opaque rectangular background, remains reachable, and does not repeatedly steal focus.
-2. Drag quickly and across monitors. Release/cancel should leave it responsive. Test saved position, scale and `--reset-position` after monitor changes.
-3. Wait through several automatic gestures. Each should be bounded and return to idle. Test manual selection, toggling automatic behavior, pause/resume, wave and drag interruptions.
+2. Drag quickly and across monitors. Release/cancel should leave it responsive. Test saved position, scale and `--reset-position` after monitor changes. At 100%, packs of different cell resolutions must remain 160 logical pixels high; 75% must be 120px, without rewriting a saved scale preference.
+3. Wait through several automatic gestures. Each should be bounded and return to idle. Test one-shot selection while automatic behavior is both on and off. Selecting idle must preserve that switch; blink and wave previews must return to idle without looping forever. Test repeated selection, pause/resume, wave and drag interruptions.
 4. Load a valid user-supplied pack with different cell sizes and animation order. Confirm its idle/interaction mappings and row crops. Invalid/missing/out-of-bounds packs must fail with an actionable error.
 5. Open/close controls repeatedly. Test keyboard shortcuts only in the appropriate focused window. Quitting should leave no companion process behind.
 6. Configure an ordinary HTTPS shortcut and verify the intended destination in your normal browser. Empty Save clears it. Confirm no provider connection or embedded login is implied.
