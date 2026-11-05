@@ -71,6 +71,25 @@ for (const b of automaticBehaviors) {
 }
 """)
 
+    def test_high_rate_24_frame_preview_is_bounded(self):
+        self.js("""
+frameCounts[2] = 24; frameIntervals[2] = 25;
+chooseAnimation(2);
+let nominalElapsed = 0;
+for (let i = 1; i < 24; ++i) {
+  nominalElapsed += frameIntervals[activeAnimation]; advanceAnimation();
+  assert.equal(activeAnimation, 2);
+  assert.equal(frame, i);
+  assert.equal(gestureLoopsRemaining, 1);
+}
+nominalElapsed += frameIntervals[activeAnimation]; advanceAnimation();
+assert.equal(nominalElapsed, 600);
+assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(frame, 0);
+assert.equal(gestureLoopsRemaining, 0);
+assert(autonomous);
+""")
+
     def test_pause_and_hide_freeze_state(self):
         self.js("""
 startGesture(2, 2);
@@ -81,13 +100,63 @@ paused = false; visible = false; advanceAnimation();
 assert.deepEqual([frame, gestureLoopsRemaining, automaticWaitMs], before);
 """)
 
-    def test_manual_wave_and_reenable(self):
+    def test_preview_returns_idle_and_preserves_automatic_behavior(self):
         self.js("""
-chooseAnimation(2); assert(!autonomous);
+for (const automatic of [true, false]) {
+  setAutonomous(automatic);
+  chooseAnimation(2);
+  assert.equal(autonomous, automatic);
+  assert.equal(activeAnimation, 2);
+  assert.equal(selectedAnimation, 2);
+  assert.equal(gestureLoopsRemaining, 1);
+  for (let i = 0; i < frameCounts[2]; ++i) advanceAnimation();
+  assert.equal(activeAnimation, characterPack.idleIndex);
+  assert.equal(selectedAnimation, characterPack.idleIndex);
+  assert.equal(gestureLoopsRemaining, 0);
+  assert.equal(autonomous, automatic);
+}
+""")
+
+    def test_selecting_idle_does_not_disable_automatic_gestures(self):
+        self.js("""
+Math.random = () => 0;
+setAutonomous(true);
+chooseAnimation(characterPack.idleIndex);
+assert(autonomous);
+assert.equal(activeAnimation, characterPack.idleIndex);
+automaticWaitMs = 1;
+advanceAnimation();
+assert.equal(gestureLoopsRemaining, 1);
+assert.notEqual(activeAnimation, characterPack.idleIndex);
+""")
+
+    def test_preview_pause_repeat_and_wave_interruption(self):
+        self.js("""
+chooseAnimation(2); advanceAnimation();
+assert.equal(frame, 1);
+chooseAnimation(2);
+assert.equal(frame, 0);
+assert.equal(gestureLoopsRemaining, 1);
+paused = true;
+advanceAnimation(); assert.equal(frame, 0);
+paused = false;
 wave(); assert.equal(activeAnimation, characterPack.waveIndex);
 for (let i = 0; i < frameCounts[characterPack.waveIndex]; ++i) advanceAnimation();
-assert.equal(activeAnimation, 2);
-setAutonomous(true); assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(gestureLoopsRemaining, 0);
+assert(autonomous);
+""")
+
+    def test_disabled_automatic_behavior_never_restarts_after_preview(self):
+        self.js("""
+setAutonomous(false); chooseAnimation(2);
+for (let i = 0; i < frameCounts[2]; ++i) advanceAnimation();
+automaticWaitMs = 1;
+for (let i = 0; i < 100; ++i) advanceAnimation();
+assert.equal(activeAnimation, characterPack.idleIndex);
+assert.equal(gestureLoopsRemaining, 0);
+assert(!autonomous);
+assert.equal(automaticWaitMs, 1);
 """)
 
     def test_drag_preempts_and_suppresses_automatic_start(self):
