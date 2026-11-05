@@ -1,0 +1,90 @@
+# Deskling
+
+An X11-first Linux desktop character engine, built with Rust and Qt Quick/QML.
+
+**Early source prototype.** The engine, character data, and optional integrations are separate concerns. This first branch implements the local window, declarative sprite packs, and decorative behavior. Cloud/local agent connectors and an in-app chat interface are **not implemented**.
+
+No character artwork is bundled. Launching without a pack shows a code-drawn **diagnostic shape**, not a finished mascot. This keeps the engine runnable while character designs and their licenses remain independent.
+
+## Current slice
+
+- Transparent frameless X11 window, drag to move, always-on-top hint.
+- Local JSON + PNG character packs with strict validation and bounded animation behavior.
+- Mostly idle, with occasional short weighted gestures. Manual selection and pause remain available.
+- Right-click controls, size and position persistence, and an optional explicit HTTPS browser shortcut.
+- No telemetry, account/session access, API keys, background activity monitoring, executable pack code, or remote asset loading.
+
+Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
+
+## Build without installing Deskling
+
+Requirements: Rust/Cargo 1.70+, C++17 compiler, `ar`, `pkg-config`, Qt 6.4+ development tools (`moc`, `rcc`), and the Qt Quick/QML runtime modules used by the UI. Python 3 is used for source tests; Node.js is optional for scheduler tests.
+
+On Ubuntu 24.04+ or Debian 13, install system prerequisites yourself if needed:
+
+```sh
+sudo apt update
+sudo apt install cargo rustc build-essential pkg-config python3 \
+  qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
+  qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtquick-controls \
+  qml6-module-qtquick-layouts qml6-module-qtquick-templates \
+  qml6-module-qtqml qml6-module-qtqml-models qml6-module-qtqml-workerscript
+```
+
+Then, from the repository root:
+
+```sh
+sh scripts/check-prerequisites.sh
+cargo test --offline --locked -p deskling-core
+cargo build --offline --locked --release
+./target/release/deskling-desktop
+```
+
+Run as your normal user inside an X11 session, not through sudo. No app installation or autostart configuration is performed. With system tools installed, there are no Cargo crates to download. The executable dynamically links Qt and is not a portable standalone binary.
+
+For a character you supply:
+
+```sh
+./target/release/deskling-desktop --pack /path/to/character/pack.json
+```
+
+See [character packs](docs/CHARACTER_PACKS.md). The example manifest is a template and intentionally has no accompanying artwork.
+
+## Controls and behavior
+
+- Drag to move. Single-click plays the pack's wave interaction. Double-click opens your configured link.
+- Right-click opens controls. Quit is in that panel.
+- **Automatic behavior** is on when the pack has behaviors. The first action starts around 5–10 seconds later; subsequent idle gaps vary from 20–45 seconds. Actions are bounded by the pack's loop counts and return to its idle animation. Timing may be slower under load.
+- Choosing an animation manually disables automatic behavior. Re-enable the switch to return to automatic idle. Pause stops playback and its countdown.
+- Automatic behavior never moves the window, takes focus, or claims to represent an agent's activity.
+- Ctrl+O opens the configured link; Ctrl+comma opens controls; Ctrl+Q quits, while the character window is focused. Space pauses. Escape closes controls.
+- `--reset-position` recovers a window moved off-screen. Quit another running copy first; single-instance handling is not implemented.
+
+The transparent rectangular window still receives mouse input within its bounds. Window managers can override the always-on-top hint.
+
+## Browser shortcut, not a connector
+
+Paste an ordinary HTTPS URL in controls and save it, or use the session-only `--link-url URL` argument. Empty Save clears the stored link. The system's normal browser handles navigation and login. Deskling cannot tell whether the destination loaded successfully.
+
+The deliberately narrow validator accepts ASCII DNS hostnames and opaque URI paths. Ports, IP literals, credentials, query strings and fragments are rejected. Never include tokens or other secrets in a path: syntax validation cannot detect them. No URL is supplied by a character pack, and no request is sent until you explicitly open the shortcut.
+
+Settings contain only the saved link, scale and position, normally in `$XDG_CONFIG_HOME/Deskling/desktop.ini` or `~/.config/Deskling/desktop.ini`. The link is plain text with private file permissions, not encrypted. Character packs remain separate local files. No settings or private packs belong in this repository.
+
+## Verify
+
+```sh
+sh scripts/verify.sh
+```
+
+This runs source/scheduler checks, Rust tests, C++ pack-validation tests, a release build and an offscreen **item RGBA** smoke test. Node-backed scheduler tests explicitly skip when Node is absent. The smoke test renders the character item, not an X11 desktop capture, and therefore does not verify native transparency, stacking, dragging or interaction. See [verification](docs/VERIFICATION.md).
+
+If Qt reports missing modules, install the named runtime modules; having Qt libraries alone is insufficient. A missing DISPLAY means you are outside the desktop session. An opaque background needs compositor/renderer diagnosis, not root privileges. Use `QT_QUICK_BACKEND=software` as a rendering diagnostic if needed.
+
+## Architecture and license
+
+- `deskling-core`: dependency-free Rust CLI and browser-link rules.
+- `deskling-desktop`: Rust entry point, narrow C ABI, native Qt window/config glue, validated pack loader and QML renderer/scheduler.
+- Character packs: inert JSON + local PNG data, independently owned and licensed.
+- Connectors: future boundary only. No provider SDK, local server, socket, credential flow or agent protocol is implemented in this branch.
+
+Deskling-owned code and diagnostic geometry are MIT licensed. Qt, runtimes and any future assets retain their own licenses. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases, private artwork or third-party asset bundles are included.
