@@ -2,9 +2,13 @@
 
 An X11-first Linux desktop character engine, built with Rust and Qt Quick/QML.
 
+![Deskling mascot: a charcoal-and-purple maker creature with cyan eyes, goggles and glowing antennae, working beside a tiny laptop.](assets/mascot/deskling-mascot.png)
+
+Deskling's **static project mascot**. This illustration is not an animated sprite sheet or a runtime character pack. See [mascot artwork](assets/mascot/README.md).
+
 **Early source prototype.** The engine, character data, and optional integrations are separate concerns. This first branch implements the local window, declarative sprite packs, and decorative behavior. Cloud/local agent connectors and an in-app chat interface are **not implemented**.
 
-No character artwork is bundled. Launching without a pack shows a code-drawn **diagnostic shape**, not a finished mascot. This keeps the engine runnable while character designs and their licenses remain independent.
+No runtime character pack is bundled. Launching without a pack shows a code-drawn **diagnostic shape**, not the mascot above. This keeps the engine runnable while character packs and their licenses remain independent.
 
 ## Current slice
 
@@ -87,4 +91,4 @@ If Qt reports missing modules, install the named runtime modules; having Qt libr
 - Character packs: inert JSON + local PNG data, independently owned and licensed.
 - Connectors: future boundary only. No provider SDK, local server, socket, credential flow or agent protocol is implemented in this branch.
 
-Deskling-owned code and diagnostic geometry are MIT licensed. Qt, runtimes and any future assets retain their own licenses. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases, private artwork or third-party asset bundles are included.
+Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [mascot artwork](assets/mascot/README.md) is separate from the code license; its reuse terms have not yet been specified. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases or runtime character packs are included.
