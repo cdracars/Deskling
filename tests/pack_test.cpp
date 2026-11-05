@@ -7,7 +7,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QList>
 #include <QTemporaryDir>
+#include <QUrl>
 #include <QVariantList>
 #include <cstdlib>
 #include <iostream>
@@ -111,5 +113,37 @@ int main(int argc, char **argv) {
     QFile png(dir.filePath("sheet.png")); check(png.open(QIODevice::ReadOnly), "open PNG");
     QByteArray truncated = png.readAll(); png.close(); truncated.truncate(40);
     write(dir.filePath("sheet.png"), truncated); run(valid(), false);
+    // An optional real pack supplements the generated invalid-input fixtures.
+    // verify.sh supplies the checked-in mascot; no pixels are changed here.
+    if (argc > 1) {
+        check(argc == 2, "usage: pack-tests [real-pack.json]");
+        QVariantMap actual;
+        check(loadCharacterPack(QString::fromLocal8Bit(argv[1]), actual, error), "real mascot pack loads");
+        check(actual.value("id").toString() == "cyber-gremlin", "real mascot identity");
+        check(actual.value("cellWidth").toInt() == 443 && actual.value("cellHeight").toInt() == 443, "real mascot cell size");
+        check(actual.value("animations").toList().size() == 3, "real mascot animation count");
+        check(actual.value("idleIndex").toInt() == 0 && actual.value("waveIndex").toInt() == 2, "real mascot interaction mapping");
+        const QImage realSheet(QUrl(actual.value("source").toString()).toLocalFile());
+        check(!realSheet.isNull() && realSheet.hasAlphaChannel(), "real mascot PNG decodes with alpha");
+        QList<QImage> uniqueFrames;
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < 4; ++col) {
+                const QImage frame = realSheet.copy(col * 443, row * 443, 443, 443);
+                int opaque = 0, transparent = 0;
+                for (int y = 0; y < frame.height(); ++y) {
+                    for (int x = 0; x < frame.width(); ++x) {
+                        const int alpha = frame.pixelColor(x, y).alpha();
+                        opaque += alpha > 128;
+                        transparent += alpha == 0;
+                    }
+                }
+                check(opaque > 0 && transparent > 0, "real mascot frame is visible with transparent padding");
+                for (const auto &previous : uniqueFrames)
+                    check(frame != previous, "real mascot frames contain distinct pixels");
+                uniqueFrames.append(frame);
+            }
+        }
+        check(uniqueFrames.size() == 8, "eight real mascot frames checked");
+    }
     std::cout << "Pack validation tests passed\n";
 }

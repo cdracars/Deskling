@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "cyber-gremlin",
+  "name": "Cyber Gremlin",
+  "spriteSheet": "sprites.png",
+  "cellWidth": 443,
+  "cellHeight": 443,
+  "idle": "idle",
+  "animations": [
+    {"id": "idle", "label": "Relaxed idle", "row": 0, "frames": 1, "fps": 4},
+    {"id": "blink", "label": "Blink", "row": 0, "frames": 4, "fps": 8},
+    {"id": "wave", "label": "Wave", "row": 1, "frames": 4, "fps": 5}
+  ],
+  "interactions": {"wave": "wave"},
+  "behaviors": [
+    {"animation": "blink", "loops": 1, "weight": 4},
+    {"animation": "wave", "loops": 1, "weight": 1}
+  ]
+}

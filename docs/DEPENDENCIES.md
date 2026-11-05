@@ -6,7 +6,7 @@ Reviewed: 2026-11-05. This is a practical compliance record, not legal advice or
 
 Deskling's original Rust, C++ and QML source, including its code-drawn geometric test placeholder, is offered under the repository's MIT license. That license does **not** relicense Qt, language runtimes, system libraries, or externally supplied assets.
 
-This branch is source-only: no Qt sources, runtime libraries, compiled releases, third-party artwork, fonts, or sprite sheets are bundled. Personal artwork is excluded from the public project. The geometric placeholder is a test fixture, not a selected public mascot. Any future asset needs its own provenance and licensing review before inclusion.
+This branch contains source and the selected public Deskling mascot artwork, including a first opt-in sprite pack. No Qt sources, runtime libraries, compiled releases, or fonts are bundled. Private personal artwork is excluded. The geometric placeholder remains a diagnostic fixture. The [static illustration](../assets/mascot/README.md) and [sprite pack](../assets/characters/cyber-gremlin/README.md) have separate provenance and reuse notices; neither is covered by the engine's MIT license. Additional assets need their own provenance and licensing review before inclusion.
 
 ## Dependency inventory
 

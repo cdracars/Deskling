@@ -2,6 +2,8 @@
 
 A pack is a JSON manifest and one PNG beside it. It contains data, not QML, JavaScript, commands, URLs or provider configuration. Keep your own/private packs outside the repository. The engine's license does not grant rights to anyone else's character or artwork.
 
+The repository includes one opt-in [Cyber Gremlin preview](../assets/characters/cyber-gremlin/README.md), launched after building with `sh scripts/run-gremlin.sh`. It is separate from the engine's resource bundle and has its own artwork notice. The diagnostic shape remains the default when no pack is selected.
+
 Copy `examples/pack.template.json` into your own directory, supply your own `sprites.png`, and update the values to match its real pixel layout. The template alone is not a complete runnable pack; no corresponding artwork is bundled. Running without `--pack` uses the built-in diagnostic shape instead.
 
 Required fields:
