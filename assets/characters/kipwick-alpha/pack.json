@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "kipwick-hybrid-alpha",
+  "name": "Kipwick",
+  "spriteSheet": "sprites.png",
+  "cellWidth": 288,
+  "cellHeight": 288,
+  "idle": "idle",
+  "animations": [
+    {
+      "id": "idle",
+      "label": "Breathing idle",
+      "row": 0,
+      "frames": 24,
+      "fps": 12
+    },
+    {
+      "id": "blink",
+      "label": "Curved blink",
+      "row": 1,
+      "frames": 24,
+      "fps": 40
+    },
+    {
+      "id": "wave",
+      "label": "Friendly wave",
+      "row": 2,
+      "frames": 24,
+      "fps": 20
+    },
+    {
+      "id": "curious",
+      "label": "Curious tilt",
+      "row": 3,
+      "frames": 24,
+      "fps": 12
+    },
+    {
+      "id": "bounce",
+      "label": "Gentle bounce",
+      "row": 4,
+      "frames": 24,
+      "fps": 12
+    },
+    {
+      "id": "sleepy",
+      "label": "Sleepy nod",
+      "row": 5,
+      "frames": 24,
+      "fps": 10
+    },
+    {
+      "id": "drag-left",
+      "label": "Drag lean left",
+      "row": 6,
+      "frames": 24,
+      "fps": 12
+    },
+    {
+      "id": "drag-right",
+      "label": "Drag lean right",
+      "row": 7,
+      "frames": 24,
+      "fps": 12
+    }
+  ],
+  "interactions": {
+    "wave": "wave",
+    "dragLeft": "drag-left",
+    "dragRight": "drag-right"
+  },
+  "behaviors": [
+    {
+      "animation": "blink",
+      "loops": 1,
+      "weight": 8
+    },
+    {
+      "animation": "wave",
+      "loops": 1,
+      "weight": 2
+    },
+    {
+      "animation": "curious",
+      "loops": 1,
+      "weight": 2
+    },
+    {
+      "animation": "bounce",
+      "loops": 1,
+      "weight": 1
+    },
+    {
+      "animation": "sleepy",
+      "loops": 1,
+      "weight": 1
+    }
+  ]
+}

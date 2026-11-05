@@ -8,7 +8,7 @@ Deskling's **static project mascot**. This illustration is not an animated sprit
 
 **Early source prototype.** The engine, character data, and optional integrations are separate concerns. This first branch implements the local window, declarative sprite packs, and decorative behavior. Cloud/local agent connectors and an in-app chat interface are **not implemented**.
 
-No runtime character pack is bundled. Launching without a pack shows a code-drawn **diagnostic shape**, not the mascot above. This keeps the engine runnable while character packs and their licenses remain independent.
+The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/README.md) is included for development testing, alongside the earlier [Cyber Gremlin study](assets/characters/cyber-gremlin/README.md). Both are opt-in local packs. Launching without a pack still shows a code-drawn **diagnostic shape**, not the mascot above. Engine and artwork licenses remain separate.
 
 ## Current slice
 
@@ -16,6 +16,7 @@ No runtime character pack is bundled. Launching without a pack shows a code-draw
 - Local JSON + PNG character packs with strict validation and bounded animation behavior.
 - Mostly idle, with occasional short weighted gestures. Manual selection and pause remain available.
 - Right-click controls, size and position persistence, and an optional explicit HTTPS browser shortcut.
+- Character size is 160 logical pixels high at 100%, independent of sprite resolution. Existing size percentages are preserved (75% = 120px, 200% = 320px); aspect ratio is retained.
 - No telemetry, account/session access, API keys, background activity monitoring, executable pack code, or remote asset loading.
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
@@ -52,7 +53,17 @@ For a character you supply:
 ./target/release/deskling-desktop --pack /path/to/character/pack.json
 ```
 
-See [character packs](docs/CHARACTER_PACKS.md). The example manifest is a template and intentionally has no accompanying artwork.
+To try Kipwick after building:
+
+```sh
+sh scripts/run-kipwick.sh
+```
+
+It breathes, previews short gestures, and waves on a single click. Right-click opens
+controls and Quit. See the [alpha pack's testing notes](assets/characters/kipwick-alpha/README.md)
+for isolated trial settings and the native-desktop checks still needed.
+
+See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is a template and intentionally has no accompanying artwork.
 
 ## Application icon and optional launcher
 
@@ -65,7 +76,7 @@ A standard Linux desktop entry and hicolor icon files are included for users who
 - Drag to move. Single-click plays the pack's wave interaction. Double-click opens your configured link.
 - Right-click opens controls. Quit is in that panel.
 - **Automatic behavior** is on when the pack has behaviors. The first action starts around 5–10 seconds later; subsequent idle gaps vary from 20–45 seconds. Actions are bounded by the pack's loop counts and return to its idle animation. Timing may be slower under load.
-- Choosing an animation manually disables automatic behavior. Re-enable the switch to return to automatic idle. Pause stops playback and its countdown.
+- Choosing an animation previews it once, then returns to idle. It never changes the Automatic behavior switch. Turn that switch off to keep only idle; pause stops all playback and its countdown.
 - Automatic behavior never moves the window, takes focus, or claims to represent an agent's activity.
 - Ctrl+O opens the configured link; Ctrl+comma opens controls; Ctrl+Q quits, while the character window is focused. Space pauses. Escape closes controls.
 - `--reset-position` recovers a window moved off-screen. Quit another running copy first; single-instance handling is not implemented.
@@ -86,7 +97,7 @@ Settings contain only the saved link, scale and position, normally in `$XDG_CONF
 sh scripts/verify.sh
 ```
 
-This runs source/scheduler checks, Rust tests, C++ pack-validation tests, a release build and an offscreen **item RGBA** smoke test. Node-backed scheduler tests explicitly skip when Node is absent. The smoke test renders the character item, not an X11 desktop capture, and therefore does not verify native transparency, stacking, dragging or interaction. See [verification](docs/VERIFICATION.md).
+This runs source/scheduler and launcher checks, Rust tests, C++ pack-validation tests, a release build and offscreen **item RGBA** smoke tests for the diagnostic shape, earlier gremlin study and Kipwick alpha pack. Node-backed scheduler tests explicitly skip when Node is absent. Smoke tests render character items, not X11 desktop captures, and therefore do not verify native transparency, stacking, dragging or interaction. See [verification](docs/VERIFICATION.md).
 
 If Qt reports missing modules, install the named runtime modules; having Qt libraries alone is insufficient. A missing DISPLAY means you are outside the desktop session. An opaque background needs compositor/renderer diagnosis, not root privileges. Use `QT_QUICK_BACKEND=software` as a rendering diagnostic if needed.
 
@@ -97,4 +108,4 @@ If Qt reports missing modules, install the named runtime modules; having Qt libr
 - Character packs: inert JSON + local PNG data, independently owned and licensed.
 - Connectors: future boundary only. No provider SDK, local server, socket, credential flow or agent protocol is implemented in this branch.
 
-Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [mascot artwork](assets/mascot/README.md) and embedded [Kipwick icon](assets/icons/README.md) are separate from the code license; their reuse terms have not yet been specified. Resolve the embedded icon's reuse terms and see [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases or runtime character packs are included.
+Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [static mascot artwork](assets/mascot/README.md), [earlier runtime study](assets/characters/cyber-gremlin/README.md) and [Kipwick alpha pack](assets/characters/kipwick-alpha/README.md) and the embedded [Kipwick icon](assets/icons/README.md) have separate, currently unspecified artwork reuse terms. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases are included.
