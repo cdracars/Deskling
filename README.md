@@ -8,7 +8,7 @@ Deskling's **static project mascot**. This illustration is not an animated sprit
 
 **Early source prototype.** The engine, character data, and optional integrations are separate concerns. This first branch implements the local window, declarative sprite packs, and decorative behavior. Cloud/local agent connectors and an in-app chat interface are **not implemented**.
 
-A first [Cyber Gremlin animation preview](assets/characters/cyber-gremlin/README.md) is included as an opt-in local pack. Launching without a pack still shows a code-drawn **diagnostic shape**, not the mascot above. Engine and artwork licenses remain separate.
+The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/README.md) is included for development testing, alongside the earlier [Cyber Gremlin study](assets/characters/cyber-gremlin/README.md). Both are opt-in local packs. Launching without a pack still shows a code-drawn **diagnostic shape**, not the mascot above. Engine and artwork licenses remain separate.
 
 ## Current slice
 
@@ -53,14 +53,14 @@ For a character you supply:
 ./target/release/deskling-desktop --pack /path/to/character/pack.json
 ```
 
-To try the included gremlin after building:
+To try Kipwick after building:
 
 ```sh
-sh scripts/run-gremlin.sh
+sh scripts/run-kipwick.sh
 ```
 
-It rests, occasionally blinks, and waves on a single click. Right-click opens
-controls and Quit. See the [pack's testing notes](assets/characters/cyber-gremlin/README.md)
+It breathes, previews short gestures, and waves on a single click. Right-click opens
+controls and Quit. See the [alpha pack's testing notes](assets/characters/kipwick-alpha/README.md)
 for isolated trial settings and the native-desktop checks still needed.
 
 See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is a template and intentionally has no accompanying artwork.
@@ -91,7 +91,7 @@ Settings contain only the saved link, scale and position, normally in `$XDG_CONF
 sh scripts/verify.sh
 ```
 
-This runs source/scheduler and launcher checks, Rust tests, C++ pack-validation tests, a release build and offscreen **item RGBA** smoke tests for the diagnostic shape and included gremlin. Node-backed scheduler tests explicitly skip when Node is absent. Smoke tests render character items, not X11 desktop captures, and therefore do not verify native transparency, stacking, dragging or interaction. See [verification](docs/VERIFICATION.md).
+This runs source/scheduler and launcher checks, Rust tests, C++ pack-validation tests, a release build and offscreen **item RGBA** smoke tests for the diagnostic shape, earlier gremlin study and Kipwick alpha pack. Node-backed scheduler tests explicitly skip when Node is absent. Smoke tests render character items, not X11 desktop captures, and therefore do not verify native transparency, stacking, dragging or interaction. See [verification](docs/VERIFICATION.md).
 
 If Qt reports missing modules, install the named runtime modules; having Qt libraries alone is insufficient. A missing DISPLAY means you are outside the desktop session. An opaque background needs compositor/renderer diagnosis, not root privileges. Use `QT_QUICK_BACKEND=software` as a rendering diagnostic if needed.
 
@@ -102,4 +102,4 @@ If Qt reports missing modules, install the named runtime modules; having Qt libr
 - Character packs: inert JSON + local PNG data, independently owned and licensed.
 - Connectors: future boundary only. No provider SDK, local server, socket, credential flow or agent protocol is implemented in this branch.
 
-Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [static mascot artwork](assets/mascot/README.md) and [first runtime character pack](assets/characters/cyber-gremlin/README.md) have separate, currently unspecified artwork reuse terms. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases are included.
+Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [static mascot artwork](assets/mascot/README.md), [earlier runtime study](assets/characters/cyber-gremlin/README.md) and [Kipwick alpha pack](assets/characters/kipwick-alpha/README.md) have separate, currently unspecified artwork reuse terms. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases are included.

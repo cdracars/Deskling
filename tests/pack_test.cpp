@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
     // An optional real pack supplements the generated invalid-input fixtures.
     // verify.sh supplies the checked-in mascot; no pixels are changed here.
     if (argc > 1) {
-        check(argc == 2, "usage: pack-tests [real-pack.json]");
+        check(argc <= 3, "usage: pack-tests [first-pack.json] [kipwick-pack.json]");
         QVariantMap actual;
         check(loadCharacterPack(QString::fromLocal8Bit(argv[1]), actual, error), "real mascot pack loads");
         check(actual.value("id").toString() == "cyber-gremlin", "real mascot identity");
@@ -166,6 +166,58 @@ int main(int argc, char **argv) {
             }
         }
         check(uniqueFrames.size() == 8, "eight real mascot frames checked");
+    }
+    // The development Kipwick pack exercises all 192 actual image cells,
+    // not only the small synthetic fixture or the earlier eight-frame study.
+    if (argc > 2) {
+        QVariantMap actual;
+        check(loadCharacterPack(QString::fromLocal8Bit(argv[2]), actual, error), "Kipwick alpha pack loads");
+        check(actual.value("id").toString() == "kipwick-hybrid-alpha", "Kipwick identity");
+        check(actual.value("cellWidth").toInt() == 288 && actual.value("cellHeight").toInt() == 288,
+              "Kipwick cell dimensions");
+        const auto entries = actual.value("animations").toList();
+        check(entries.size() == 8, "Kipwick eight states");
+        check(actual.value("idleIndex").toInt() == 0 && actual.value("waveIndex").toInt() == 2 &&
+              actual.value("dragLeftIndex").toInt() == 6 && actual.value("dragRightIndex").toInt() == 7,
+              "Kipwick interaction mapping");
+        check(entries[1].toMap().value("intervalMs").toInt() == 25, "Kipwick 40 fps blink");
+        const QImage atlas(QUrl(actual.value("source").toString()).toLocalFile());
+        check(!atlas.isNull() && atlas.hasAlphaChannel() && atlas.size() == QSize(6912, 2304),
+              "Kipwick actual PNG fully decodes");
+        QImage waveHead, waveFeet;
+        for (int row = 0; row < 8; ++row) {
+            check(entries[row].toMap().value("frames").toInt() == 24, "Kipwick 24 timeline frames");
+            QList<QImage> unique;
+            for (int col = 0; col < 24; ++col) {
+                const QImage frame = atlas.copy(col * 288, row * 288, 288, 288).convertToFormat(QImage::Format_ARGB32);
+                int visible = 0, transparent = 0;
+                for (int y = 0; y < 288; ++y) {
+                    const auto *pixels = reinterpret_cast<const QRgb *>(frame.constScanLine(y));
+                    for (int x = 0; x < 288; ++x) {
+                        const int alpha = qAlpha(pixels[x]);
+                        visible += alpha > 128; transparent += alpha == 0;
+                        if (x == 0 || x == 287 || y == 0 || y == 287)
+                            check(alpha == 0, "Kipwick transparent cell padding");
+                        if (x >= 116 && x < 168 && y >= 200 && y < 226)
+                            check(alpha == 255, "Kipwick opaque torso core");
+                    }
+                }
+                check(visible > 0 && transparent > 0, "Kipwick visible frame with alpha");
+                bool seen = false;
+                for (const auto &previous : unique) if (frame == previous) { seen = true; break; }
+                if (!seen) unique.append(frame);
+                if (row == 2) {
+                    const auto head = frame.copy(0, 0, 288, 132);
+                    const auto feet = frame.copy(0, 246, 288, 42);
+                    if (col == 0) { waveHead = head; waveFeet = feet; }
+                    else check(head == waveHead && feet == waveFeet, "Kipwick stationary wave head and feet");
+                }
+            }
+            // Breathing retraces 13 distinct positions on its 24-slot cycle.
+            // Other rows include one-shot endpoints or repeated neutral holds.
+            check(unique.size() >= (row == 0 ? 13 : 18),
+                  "Kipwick substantial distinct motion, mirrored breathing/endpoints allowed");
+        }
     }
     std::cout << "Pack validation tests passed\n";
 }
