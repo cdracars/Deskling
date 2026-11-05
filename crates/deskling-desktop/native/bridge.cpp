@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QImage>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -26,6 +27,16 @@ extern "C" bool deskling_validate_link_url(const char *url);
 
 // Keep the resource initializer in C++ linkage, outside the C ABI entry point.
 static void initResources() { Q_INIT_RESOURCE(deskling); }
+
+static constexpr int iconSizes[] = {16, 24, 32, 48, 64, 128, 256, 512};
+
+static QIcon applicationIcon() {
+    QIcon icon;
+    for (const int size : iconSizes) {
+        icon.addFile(QStringLiteral(":/deskling/icons/deskling-%1.png").arg(size), QSize(size, size));
+    }
+    return icon;
+}
 
 static bool validLinkUrl(const QString &url) {
     if (url.contains(QChar('\0'))) return false;
@@ -192,6 +203,10 @@ extern "C" int deskling_run(int argc, char **argv, const char *linkUrl,
     QCoreApplication::setApplicationVersion("0.1.0");
     app.setQuitOnLastWindowClosed(false);
     initResources(); // Pull the resources object out of the static archive.
+    // Match packaging/linux/deskling.desktop and set the default for all windows.
+    // Embedded resources also work when launching a build from another directory.
+    QGuiApplication::setDesktopFileName(QStringLiteral("deskling"));
+    QGuiApplication::setWindowIcon(applicationIcon());
 
     QVariantMap characterPack;
     QString packError;
@@ -207,6 +222,18 @@ extern "C" int deskling_run(int argc, char **argv, const char *linkUrl,
     if (engine.rootObjects().isEmpty()) return 3;
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());
     if (!window) return 3;
+    if (smokeTest) {
+        for (const int size : iconSizes) {
+            const QImage image(QStringLiteral(":/deskling/icons/deskling-%1.png").arg(size));
+            if (image.size() != QSize(size, size) ||
+                !window->icon().availableSizes().contains(QSize(size, size)) ||
+                window->icon().pixmap(QSize(size, size)).isNull()) {
+                qCritical("SMOKE FAIL: application icon missing or invalid at %dpx", size);
+                return 9;
+            }
+        }
+        qInfo("SMOKE PASS: all eight embedded Kipwick icon sizes decode and reach the Qt window. Desktop launcher appearance still requires desktop checks.");
+    }
     if (smokeTest) window->setProperty("paused", true);
     bridge.setWindow(window, resetPosition);
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &bridge, &Bridge::savePosition);

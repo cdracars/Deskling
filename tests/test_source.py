@@ -8,10 +8,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SourceTests(unittest.TestCase):
-    def test_resource_graph_has_no_bundled_artwork(self):
+    def test_resource_graph_bundles_app_icons_but_no_character_pack(self):
         qrc = ROOT / "crates/deskling-desktop/native/resources.qrc"
         files = ET.fromstring(qrc.read_text()).findall(".//file")
-        self.assertEqual([f.attrib["alias"] for f in files], ["Main.qml"])
+        self.assertEqual([f.attrib["alias"] for f in files], ["Main.qml"] + [
+            f"icons/deskling-{size}.png" for size in (16, 24, 32, 48, 64, 128, 256, 512)
+        ])
         for entry in files:
             self.assertTrue((qrc.parent / entry.text).resolve().is_file())
 

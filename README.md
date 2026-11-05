@@ -54,6 +54,12 @@ For a character you supply:
 
 See [character packs](docs/CHARACTER_PACKS.md). The example manifest is a template and intentionally has no accompanying artwork.
 
+## Application icon and optional launcher
+
+The selected **Kipwick portrait** is embedded as Deskling's application/window icon in eight sizes, from 16 to 512 pixels. It is separate from the static mascot illustration above and does not replace the diagnostic shape or load a character pack.
+
+A standard Linux desktop entry and hicolor icon files are included for users who want an app-menu launcher. Nothing is installed automatically. See [icon files, previews and optional setup](assets/icons/README.md). Deskling keeps its existing tool-window behavior, so a taskbar or dock icon is not guaranteed by every window manager.
+
 ## Controls and behavior
 
 - Drag to move. Single-click plays the pack's wave interaction. Double-click opens your configured link.
@@ -91,4 +97,4 @@ If Qt reports missing modules, install the named runtime modules; having Qt libr
 - Character packs: inert JSON + local PNG data, independently owned and licensed.
 - Connectors: future boundary only. No provider SDK, local server, socket, credential flow or agent protocol is implemented in this branch.
 
-Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [mascot artwork](assets/mascot/README.md) is separate from the code license; its reuse terms have not yet been specified. See [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases or runtime character packs are included.
+Deskling-owned code and diagnostic geometry are MIT licensed. Qt and runtimes retain their own licenses. The [mascot artwork](assets/mascot/README.md) and embedded [Kipwick icon](assets/icons/README.md) are separate from the code license; their reuse terms have not yet been specified. Resolve the embedded icon's reuse terms and see [dependency obligations](docs/DEPENDENCIES.md) before distributing binaries. No binary releases or runtime character packs are included.

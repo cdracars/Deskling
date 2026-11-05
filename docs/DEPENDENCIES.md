@@ -6,7 +6,7 @@ Reviewed: 2026-11-05. This is a practical compliance record, not legal advice or
 
 Deskling's original Rust, C++ and QML source, including its code-drawn geometric test placeholder, is offered under the repository's MIT license. That license does **not** relicense Qt, language runtimes, system libraries, or externally supplied assets.
 
-This branch is source-only: no Qt sources, runtime libraries, compiled releases, third-party artwork, fonts, or sprite sheets are bundled. Personal artwork is excluded from the public project. The geometric placeholder is a test fixture, not a selected public mascot. Any future asset needs its own provenance and licensing review before inclusion.
+This repository distributes source, not compiled releases or Qt/runtime libraries. It includes a separately documented [static project mascot](../assets/mascot/README.md) and [Kipwick application icon](../assets/icons/README.md). The eight icon exports are embedded when the application is built; their reuse terms have not yet been specified and must be resolved before redistributing a binary containing them. The geometric placeholder remains a test fixture, not a runtime mascot pack. No fonts or runtime sprite sheets are bundled. Any future asset needs its own provenance and licensing review before inclusion.
 
 ## Dependency inventory
 

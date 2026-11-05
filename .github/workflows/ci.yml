@@ -13,7 +13,7 @@ jobs:
       - name: Install build dependencies on the disposable runner
         run: |
           sudo apt-get update
-          sudo apt-get install -y cargo rustc build-essential pkg-config python3 nodejs \
+          sudo apt-get install -y cargo rustc build-essential pkg-config python3 nodejs desktop-file-utils \
             qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
             qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtquick-controls \
             qml6-module-qtquick-layouts qml6-module-qtquick-templates \
@@ -25,3 +25,5 @@ jobs:
           pkg-config --modversion Qt6Core Qt6Quick
       - name: Verify source, core, packs, build and rendered item
         run: sh scripts/verify.sh
+      - name: Validate Linux launcher
+        run: desktop-file-validate packaging/linux/deskling.desktop

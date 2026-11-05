@@ -5,9 +5,11 @@ This source branch is an early engine extraction, not a stable release. Read the
 ## Automated checks
 
 - Python source/resource/schema checks and optional Node execution of extracted QML scheduler helpers.
+- PNG dimensions and Linux desktop-entry/application identity checks for the Kipwick icon. The original master is preserved, and the Qt resource graph includes only the eight icon exports plus QML, not a runtime character pack.
 - Rust core and C ABI boundary tests.
 - Native QtCore/QtGui pack-loader tests using temporary generated test images, not bundled character artwork.
 - A release build and offscreen item-rendering smoke test with detailed pixel/format diagnostics and a five-second total deadline.
+- The smoke test also decodes every embedded icon size and checks the Qt window receives an icon with all eight representations. This verifies runtime integration, not just files in the repository.
 
 The development workspace could execute Python/Node checks and source review but did not have Rust or Qt development tools. Native build, loader tests and smoke verification are delegated to CI/target runs, and must not be described as passed without their actual results.
 
@@ -21,5 +23,6 @@ The smoke test uses `QQuickItem::grabToImage()` because Qt 6.4's offscreen softw
 4. Load a valid user-supplied pack with different cell sizes and animation order. Confirm its idle/interaction mappings and row crops. Invalid/missing/out-of-bounds packs must fail with an actionable error.
 5. Open/close controls repeatedly. Test keyboard shortcuts only in the appropriate focused window. Quitting should leave no companion process behind.
 6. Configure an ordinary HTTPS shortcut and verify the intended destination in your normal browser. Empty Save clears it. Confirm no provider connection or embedded login is implied.
+7. Check the Kipwick window icon wherever the window manager displays tool-window icons. If you chose to install the optional launcher, check the app-menu icon at normal and HiDPI scale and launch it. Confirm it works with a working directory outside the checkout. Taskbar, dock and Alt-Tab visibility remain subject to the existing `Qt.Tool` behavior; the icon does not force those entries to appear.
 
 Report the OS, desktop/window manager, Qt version, scale factor, exact command and error text. Do not include cookies, credentials, tokens or private artwork unless intentionally sharing them with the recipient.

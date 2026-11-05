@@ -37,6 +37,8 @@ fn main() {
     for path in ["native/bridge.hpp", "native/bridge.cpp", "native/resources.qrc", "qml/Main.qml", "native/pack.cpp", "native/pack.hpp"] {
         println!("cargo:rerun-if-changed={path}");
     }
+    // rcc embeds these files; changing an export must rebuild the executable.
+    println!("cargo:rerun-if-changed=../../assets/icons/hicolor");
     for name in ["CXX", "AR", "PKG_CONFIG_PATH", "PKG_CONFIG_LIBDIR"] {
         println!("cargo:rerun-if-env-changed={name}");
     }
