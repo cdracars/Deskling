@@ -14,7 +14,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y cargo rustc build-essential pkg-config python3 nodejs desktop-file-utils \
-            qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
+            zlib1g-dev qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools \
             qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtquick-controls \
             qml6-module-qtquick-layouts qml6-module-qtquick-templates \
             qml6-module-qtqml qml6-module-qtqml-models qml6-module-qtqml-workerscript

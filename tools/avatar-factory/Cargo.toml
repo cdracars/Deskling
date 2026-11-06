@@ -1,0 +1,9 @@
+[package]
+name = "deskling-avatar-factory"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Offline Linux avatar pack authoring and validation for Deskling"
+
+# No crates.io dependencies. PNG compression uses the system libz.
+[dependencies]
