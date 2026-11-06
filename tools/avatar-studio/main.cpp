@@ -23,6 +23,11 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QAction>
+#include <QDir>
+#include <QMouseEvent>
+#include <QResizeEvent>
+#include <QKeySequence>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPainter>
@@ -97,6 +102,7 @@ public:
         });
         process_=new QProcess(this);
         connect(process_,&QProcess::finished,this,[this](int exit,QProcess::ExitStatus state) {
+            if(stoppingPreview_)return;
             if(state!=QProcess::NormalExit||exit!=0) {
                 const QString error=QString::fromUtf8(process_->readAllStandardError()).trimmed();
                 showProblem("Rust preview failed: "+error);
@@ -159,6 +165,7 @@ private:
     RigModel model_;
     QString renderer_,deskling_,capture_;
     bool smoke_=false;
+    bool stoppingPreview_=false;
     std::unique_ptr<QTemporaryDir> workspace_;
     QListWidget *layers_=nullptr;
     QComboBox *animation_=nullptr;
@@ -392,7 +399,9 @@ private:
     void startPreview() {
         if(!stageRig())return;
         if(process_->state()!=QProcess::NotRunning) {
-            process_->kill();process_->waitForFinished(500);
+            stoppingPreview_=true;
+            process_->kill();process_->waitForFinished(1000);
+            stoppingPreview_=false;
         }
         QStringList args{"pose",workspace_->filePath("rig.json"),
                          model_.animationId(animation_->currentIndex()),
