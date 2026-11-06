@@ -137,11 +137,16 @@ fn read_rig(path: &Path) -> Result<Rig> {
         ids.push(id);
     }
     let mut parts = Vec::new();
+    let mut total_source_pixels = 0u64;
     for (i, part) in raw_parts.iter().enumerate() {
         let m = part.object()?;
         let basename = json::field(m, "image")?.string()?;
         let bytes = fs::read(layer_path(&dir, basename)?).map_err(|e| e.to_string())?;
         let image = png::decode(&bytes).map_err(|e| format!("part '{}': {e}", ids[i]))?;
+        total_source_pixels += image.width as u64 * image.height as u64;
+        if total_source_pixels > png::MAX_PIXELS as u64 {
+            return Err("combined decoded layer images exceed 16777216-pixel budget".into());
+        }
         // Layers are allowed to be smaller or larger than their parent joint geometry,
         // but are bounded by the codec's decoded-pixel limit.
         let pivot = coords(json::field(m, "pivot")?, "pivot", 0.0, 16383.0)?;
@@ -232,8 +237,9 @@ fn sample(image: &Image, x: f64, y: f64) -> [f64; 4] {
         for dx in 0..=1 {
             let ix = x0 + dx; let iy = y0 + dy;
             if ix < 0 || iy < 0 || ix >= image.width as i32 || iy >= image.height as i32 { continue; }
-            let weight = if dx == 0 { 1.0 - fx } else { fx } *
-                         if dy == 0 { 1.0 - fy } else { fy };
+            let wx = if dx == 0 { 1.0 - fx } else { fx };
+            let wy = if dy == 0 { 1.0 - fy } else { fy };
+            let weight = wx * wy;
             let k = ((iy as u32 * image.width + ix as u32) * 4) as usize;
             let alpha = image.rgba[k + 3] as f64 / 255.0;
             rgba[3] += weight * alpha;
