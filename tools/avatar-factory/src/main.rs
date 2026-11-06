@@ -313,7 +313,11 @@ fn run() -> Result<()> {
         [_, command, input, output] if command == "extract" => extract(Path::new(input), Path::new(output)),
         [_, command, input, output] if command == "build" => build(Path::new(input), Path::new(output)),
         [_, command, input, output] if command == "rig" => rig::build(Path::new(input), Path::new(output)),
-        _ => Err("Usage:\n  deskling-avatar-factory inspect <pack.json>\n  deskling-avatar-factory extract <pack.json> <new-empty-project-dir>\n  deskling-avatar-factory build <project.json> <new-empty-output-dir>\n  deskling-avatar-factory rig <rig.json> <new-empty-output-dir>\n  deskling-avatar-factory demo <new-empty-source-dir>".into()),
+        [_, command, input, animation, frame, output] if command == "pose" => {
+            let n: u32 = frame.parse().map_err(|_| "frame must be an unsigned integer")?;
+            rig::preview(Path::new(input), animation, n, Path::new(output))
+        },
+        _ => Err("Usage:\n  deskling-avatar-factory inspect <pack.json>\n  deskling-avatar-factory extract <pack.json> <new-empty-project-dir>\n  deskling-avatar-factory build <project.json> <new-empty-output-dir>\n  deskling-avatar-factory rig <rig.json> <new-empty-output-dir>\n  deskling-avatar-factory demo <new-empty-source-dir>\n  deskling-avatar-factory pose <rig.json> <animation-id> <frame> <output.png>".into()),
     }
 }
 fn main() {

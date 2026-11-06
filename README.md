@@ -65,6 +65,8 @@ for isolated trial settings and the native-desktop checks still needed.
 
 To inspect, extract, or rebuild existing animation packs using an offline **Rust** tool, see [Avatar Factory](docs/AVATAR_FACTORY.md). The builder validates and repacks approved RGBA frames. The new layered Rust rig animates reusable character parts with joint transforms, but does not invent or segment character artwork.
 
+The new [Rust-powered **Avatar Studio**](docs/AVATAR_STUDIO.md) provides a visual Qt6 editing interface for layered rigs. Start with `sh scripts/run-avatar-studio.sh --rig /absolute/path/to/rig.json` on a supported Linux/X11 desktop. Studio is authoring-only; it does not change the runtime's default character.
+
 See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is a template and intentionally has no accompanying artwork.
 
 ## Application icon and optional launcher

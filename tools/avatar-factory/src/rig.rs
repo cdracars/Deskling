@@ -296,6 +296,29 @@ fn render(rig: &Rig, animation: usize, frame: u32) -> Result<Image> {
     }
     Ok(result)
 }
+/// Render one frame directly from immutable image layers. The Studio uses this
+/// to scrub the timeline without generating an entire atlas on each edit.
+pub fn preview(source: &Path, animation: &str, frame: u32, output: &Path) -> Result<()> {
+    let rig = read_rig(source)?;
+    let index = rig.pack.animations.iter().position(|a| a.id == animation)
+        .ok_or_else(|| format!("unknown animation '{animation}'"))?;
+    if frame >= rig.pack.animations[index].frames {
+        return Err(format!("frame {frame} outside animation '{animation}'"));
+    }
+    let image = render(&rig, index, frame)?;
+    let mut audit = Audit::default();
+    measure(&image, &mut audit, animation, frame)?;
+    let png = png::encode(&image)?;
+    let tmp = output.with_extension("png.tmp");
+    fs::write(&tmp, png).map_err(|e| e.to_string())?;
+    if let Err(e) = fs::rename(&tmp, output) {
+        let _ = fs::remove_file(&tmp);
+        return Err(format!("replacing preview: {e}"));
+    }
+    println!("Rendered {animation} frame {frame} to {}", output.display());
+    Ok(())
+}
+
 pub fn build(source: &Path, output: &Path) -> Result<()> {
     let rig = read_rig(source)?;
     let width = rig.pack.animations.iter().map(|a| a.frames * rig.pack.width).max().unwrap();

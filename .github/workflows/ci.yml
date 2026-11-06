@@ -33,6 +33,14 @@ jobs:
             test-output/rig-demo-pack/
             test-output/rig-demo-source/
             test-output/rig-demo-smoke.png
+            test-output/avatar-studio-smoke.png
+          if-no-files-found: error
+          retention-days: 14
+      - name: Publish Linux Avatar Studio runnable test kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: deskling-avatar-studio-linux-test-kit
+          path: test-output/avatar-studio-linux-test-kit/
           if-no-files-found: error
           retention-days: 14
       - name: Validate Linux launcher
