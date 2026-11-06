@@ -11,9 +11,9 @@ use std::sync::mpsc;
 use std::thread;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-struct Pose { dx: f64, dy: f64, angle: f64, scale: f64 }
+struct Pose { dx: f64, dy: f64, angle: f64, sx: f64, sy: f64 }
 impl Default for Pose {
-    fn default() -> Self { Self { dx: 0.0, dy: 0.0, angle: 0.0, scale: 1.0 } }
+    fn default() -> Self { Self { dx: 0.0, dy: 0.0, angle: 0.0, sx: 1.0, sy: 1.0 } }
 }
 #[derive(Clone, Copy, Debug)]
 struct Mat { a: f64, b: f64, c: f64, d: f64, tx: f64, ty: f64 }
@@ -67,12 +67,17 @@ fn label(map: &BTreeMap<String, Json>, key: &str) -> Result<String> {
 }
 fn pose(value: &Json) -> Result<Pose> {
     let obj = value.object()?;
-    json::only(obj, &["dx", "dy", "rotate", "scale"])?;
+    json::only(obj, &["dx", "dy", "rotate", "scale", "scaleX", "scaleY"])?;
     let mut out = Pose::default();
     if let Some(v) = obj.get("dx") { out.dx = range(v, "dx", -1024.0, 1024.0)?; }
     if let Some(v) = obj.get("dy") { out.dy = range(v, "dy", -1024.0, 1024.0)?; }
     if let Some(v) = obj.get("rotate") { out.angle = range(v, "rotate", -360.0, 360.0)?; }
-    if let Some(v) = obj.get("scale") { out.scale = range(v, "scale", 0.25, 4.0)?; }
+    if let Some(v) = obj.get("scale") {
+        let uniform = range(v, "scale", 0.15, 4.0)?;
+        out.sx = uniform; out.sy = uniform;
+    }
+    if let Some(v) = obj.get("scaleX") { out.sx = range(v, "scaleX", 0.15, 4.0)?; }
+    if let Some(v) = obj.get("scaleY") { out.sy = range(v, "scaleY", 0.15, 4.0)?; }
     Ok(out)
 }
 fn clip_value(v: &Json, part_ids: &[String], frames: u32) -> Result<Vec<Keyframe>> {
@@ -99,7 +104,7 @@ fn clip_value(v: &Json, part_ids: &[String], frames: u32) -> Result<Vec<Keyframe
     Ok(clip)
 }
 fn layer_path(dir: &Path, name: &str) -> Result<PathBuf> {
-    if name.is_empty() || name.contains(['/', '\\', ':']) || name.starts_with('.') ||
+    if name.is_empty() || (name.contains('/') || name.contains('\\') || name.contains(':')) || name.starts_with('.') ||
         !name.to_ascii_lowercase().ends_with(".png") {
         return Err("layer image must be a local PNG basename".into());
     }
@@ -180,7 +185,8 @@ fn interpolate(a: Pose, b: Pose, t: f64) -> Pose {
         dx: a.dx + (b.dx - a.dx) * t,
         dy: a.dy + (b.dy - a.dy) * t,
         angle: a.angle + angle_delta * t,
-        scale: a.scale + (b.scale - a.scale) * t,
+        sx: a.sx + (b.sx - a.sx) * t,
+        sy: a.sy + (b.sy - a.sy) * t,
     }
 }
 fn poses(clip: Option<&Vec<Keyframe>>, frame: u32, parts: &[Part]) -> Vec<Pose> {
@@ -204,8 +210,8 @@ fn matrix_for(i: usize, parts: &[Part], values: &[Pose], cache: &mut [Option<Mat
     if let Some(x) = cache[i] { return x; }
     let part = &parts[i]; let value = values[i];
     let (s, c) = value.angle.to_radians().sin_cos();
-    let a = c * value.scale; let b = s * value.scale;
-    let cc = -s * value.scale; let d = c * value.scale;
+    let a = c * value.sx; let b = s * value.sx;
+    let cc = -s * value.sy; let d = c * value.sy;
     let (px, py) = part.pivot;
     let local = Mat {
         a, b, c: cc, d,
