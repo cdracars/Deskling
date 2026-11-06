@@ -37,7 +37,7 @@ inline Pose between(const Pose &a, const Pose &b, double t) {
 }
 inline QPointF asPoint(const QJsonValue &value) {
     auto a = value.toArray();
-    return {a.value(0).toDouble(), a.value(1).toDouble()};
+    return {a.size()>0?a.at(0).toDouble():0.0, a.size()>1?a.at(1).toDouble():0.0};
 }
 inline QJsonArray jsonPoint(const QPointF &p) {
     return {p.x(), p.y()};
