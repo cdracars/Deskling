@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone)]
 pub enum Json {
     Null,
-    Bool,
+    Bool(bool),
     Number(f64),
     Text(String),
     Array(Vec<Json>),
@@ -129,11 +129,7 @@ impl Reader<'_> {
             }
             b'"' => self.string().map(Json::Text),
             b't' | b'f' | b'n' => {
-                let (word, value) = match b {
-                    b't' => (b"true".as_slice(), Json::Bool),
-                    b'f' => (b"false".as_slice(), Json::Bool),
-                    _ => (b"null".as_slice(), |_| Json::Null),
-                };
+                let word: &[u8] = match b { b't' => b"true", b'f' => b"false", _ => b"null" };
                 if !self.data[self.pos..].starts_with(word) { return Err("invalid keyword".into()); }
                 self.pos += word.len();
                 Ok(match word { b"true" => Json::Bool(true), b"false" => Json::Bool(false), _ => Json::Null })
