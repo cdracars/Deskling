@@ -71,6 +71,8 @@ cp test-output/deskling-avatar-studio "$kit/bin/deskling-avatar-studio"
 cp target/debug/deskling-avatar-factory "$kit/bin/deskling-avatar-factory"
 cp target/release/deskling-desktop "$kit/bin/deskling-desktop"
 cp -R "$factory_root/rig-demo-source" "$kit/example"
+cp -R "$factory_root/rig-demo-pack" "$kit/example-export"
+cp test-output/avatar-studio-smoke.png "$kit/studio-screenshot.png"
 cp docs/AVATAR_STUDIO.md "$kit/README.md"
 cat > "$kit/run.sh" <<'EOF'
 #!/bin/sh
