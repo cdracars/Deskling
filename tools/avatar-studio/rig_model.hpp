@@ -11,6 +11,7 @@
 #include <QTransform>
 #include <QtMath>
 #include <cmath>
+#include <algorithm>
 
 struct Pose {
     double dx = 0, dy = 0, rotate = 0, sx = 1, sy = 1;
@@ -203,10 +204,14 @@ public:
             const int other=frame==0?endFrame:0;
             entries.append(QJsonObject{{"frame",other},{"poses",poses}});
         }
-        std::sort(entries.begin(),entries.end(),[](const QJsonValue &l,const QJsonValue &r) {
-            return l.toObject().value("frame").toInt()<r.toObject().value("frame").toInt();
+        QList<QJsonObject> sorted;
+        for(const auto &v:entries)sorted.append(v.toObject());
+        std::sort(sorted.begin(),sorted.end(),[](const QJsonObject &l,const QJsonObject &r) {
+            return l.value("frame").toInt()<r.value("frame").toInt();
         });
-        motions.insert(motion,entries);
+        QJsonArray ordered;
+        for(const auto &v:sorted)ordered.append(v);
+        motions.insert(motion,ordered);
         doc.insert("motions",motions);
         dirty=true;
         return true;
