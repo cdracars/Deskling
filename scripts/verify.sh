@@ -47,4 +47,5 @@ QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
     --smoke-test --capture test-output/rig-demo-smoke.png
 # Expose an inspectable, isolated proof artifact on the CI runner.
 cp -R "$factory_root/rig-demo-pack" test-output/rig-demo-pack
+cp -R "$factory_root/rig-demo-source" test-output/rig-demo-source
 
