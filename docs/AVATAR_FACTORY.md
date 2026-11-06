@@ -152,6 +152,6 @@ offer a configurable CPU count, animation curves, and smarter sampling.
 
 ## Next milestone
 
-Implement an independent **Rust rig and pose engine** that can render from immutable RGBA layers, enforce complete opaque anatomy beneath moving limbs, interpolate pivots and transforms, and compare output pixels against frozen accepted poses. Then add a visual timeline editor that calls the Rust core. Only after a second character uses the same rigging path successfully should we call this a reusable avatar generator.
+The layered renderer is implemented. Next, add an **image- and timeline-aware editor**, visual overlays against approved pose checkpoints, seam/opaque-anatomy authoring tools, and frame-level regression fixtures. Then apply the exact same rig contract to a **second independently approved character**. No reusable-avatar-generator claim until that second character and a live desktop test pass.
 
 **Artwork rights remain independent** of Deskling's MIT code. The CLI does not change the copyright or license of the images it processes.
