@@ -63,4 +63,24 @@ QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
 # Expose an inspectable, isolated proof artifact on the CI runner.
 cp -R "$factory_root/rig-demo-pack" test-output/rig-demo-pack
 cp -R "$factory_root/rig-demo-source" test-output/rig-demo-source
+# Build a self-contained *authoring program + sample source* test bundle.
+# Qt and zlib remain dynamically linked; this is a CI demo, not a universal Linux installer.
+kit="test-output/avatar-studio-linux-test-kit"
+mkdir -p "$kit/bin"
+cp test-output/deskling-avatar-studio "$kit/bin/deskling-avatar-studio"
+cp target/debug/deskling-avatar-factory "$kit/bin/deskling-avatar-factory"
+cp target/release/deskling-desktop "$kit/bin/deskling-desktop"
+cp -R "$factory_root/rig-demo-source" "$kit/example"
+cp docs/AVATAR_STUDIO.md "$kit/README.md"
+cat > "$kit/run.sh" <<'EOF'
+#!/bin/sh
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+chmod u+x "$root/bin/deskling-avatar-studio" "$root/bin/deskling-avatar-factory" "$root/bin/deskling-desktop"
+exec "$root/bin/deskling-avatar-studio" \
+    --renderer "$root/bin/deskling-avatar-factory" \
+    --deskling "$root/bin/deskling-desktop" \
+    --rig "$root/example/rig.json" "$@"
+EOF
+
 
