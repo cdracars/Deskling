@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "deskling-avatar-factory"
+version = "0.1.0"
+
+[[package]]
 name = "deskling-core"
 version = "0.1.0"
 
