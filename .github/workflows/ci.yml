@@ -31,6 +31,7 @@ jobs:
           name: deskling-rust-rig-demo
           path: |
             test-output/rig-demo-pack/
+            test-output/rig-demo-source/
             test-output/rig-demo-smoke.png
           if-no-files-found: error
           retention-days: 14
