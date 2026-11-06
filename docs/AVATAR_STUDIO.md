@@ -17,6 +17,29 @@ Or load your own project:
 
 The startup script builds the authoring tools locally; it performs no installation or sudo operation.
 
+## Ready-to-run Linux test artifact
+
+Each successful GitHub Actions run for PR #6 publishes a short-lived artifact named
+**deskling-avatar-studio-linux-test-kit** containing the compiled Studio, the Rust
+renderer, the Deskling desktop binary, an original editable rig under example/,
+a generated native example-export/ pack, a screenshot, and a run.sh launcher.
+
+On Ubuntu 24.04 x86-64 with Qt6 runtime modules and zlib installed:
+
+1. Download the artifact ZIP from the PR workflow run's Artifacts section.
+2. Extract it anywhere you can write, then open a terminal in the extracted folder.
+3. Run the included launcher using sh run.sh. This works even when ZIP extraction
+   clears executable bits: the launcher restores permissions for the included binaries.
+4. Select Wave, drag the orange attachment joint for the right arm, adjust a rotation
+   at an intermediate frame, Save, and Export Pack to a new destination.
+5. Use File > Run exported pack in Deskling to inspect it live on X11.
+
+The CI binaries dynamically link your system Qt and zlib libraries and were
+built on Ubuntu 24.04. They are **test artifacts, not portable AppImages**:
+they may not run on Ubuntu 22.04 or different distributions because of
+library and glibc compatibility. In those environments, build locally
+using the commands below or test in a supported Ubuntu 24.04 session.
+
 ## Test the complete editing loop
 
 1. Open a rig project, or choose New Demo to create a wholly synthetic test character in a new folder.
