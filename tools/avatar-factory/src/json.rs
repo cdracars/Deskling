@@ -108,7 +108,7 @@ impl Reader<'_> {
                     self.ws(); self.byte(b':')?; let value = self.value(depth + 1)?;
                     if object.insert(key, value).is_some() { return Err("duplicate object key".into()); }
                     self.ws();
-                    match self.data.get(self.pos) {
+                    match self.data.get(self.pos).copied() {
                         Some(b',') => self.pos += 1, Some(b'}') => { self.pos += 1; break; }
                         _ => return Err("expected ',' or '}'".into()),
                     }
@@ -120,7 +120,7 @@ impl Reader<'_> {
                 if self.data.get(self.pos) == Some(&b']') { self.pos += 1; return Ok(Json::Array(list)); }
                 loop {
                     list.push(self.value(depth + 1)?); self.ws();
-                    match self.data.get(self.pos) {
+                    match self.data.get(self.pos).copied() {
                         Some(b',') => self.pos += 1, Some(b']') => { self.pos += 1; break; }
                         _ => return Err("expected ',' or ']'".into()),
                     }
@@ -141,7 +141,7 @@ impl Reader<'_> {
             b'-' | b'0'..=b'9' => {
                 let start = self.pos;
                 if b == b'-' { self.pos += 1; }
-                match self.data.get(self.pos) {
+                match self.data.get(self.pos).copied() {
                     Some(b'0') => self.pos += 1,
                     Some(b'1'..=b'9') => {
                         self.pos += 1;
@@ -154,14 +154,16 @@ impl Reader<'_> {
                     if !self.data.get(self.pos).map_or(false, |x| x.is_ascii_digit()) { return Err("invalid fraction".into()); }
                     while self.data.get(self.pos).map_or(false, |x| x.is_ascii_digit()) { self.pos += 1; }
                 }
-                if matches!(self.data.get(self.pos), Some(b'e') | Some(b'E')) {
+                if matches!(self.data.get(self.pos).copied(), Some(b'e') | Some(b'E')) {
                     self.pos += 1;
-                    if matches!(self.data.get(self.pos), Some(b'+') | Some(b'-')) { self.pos += 1; }
+                    if matches!(self.data.get(self.pos).copied(), Some(b'+') | Some(b'-')) { self.pos += 1; }
                     if !self.data.get(self.pos).map_or(false, |x| x.is_ascii_digit()) { return Err("invalid exponent".into()); }
                     while self.data.get(self.pos).map_or(false, |x| x.is_ascii_digit()) { self.pos += 1; }
                 }
                 let raw = std::str::from_utf8(&self.data[start..self.pos]).map_err(|_| "invalid number")?;
-                Ok(Json::Number(raw.parse().map_err(|_| "invalid number")?))
+                let n: f64 = raw.parse().map_err(|_| "invalid number")?;
+                if !n.is_finite() { return Err("number is not finite".into()); }
+                Ok(Json::Number(n))
             }
             _ => Err(format!("unexpected byte at position {}", self.pos)),
         }
@@ -174,6 +176,34 @@ pub fn parse(data: &[u8]) -> Result<Json, String> {
     if r.pos != r.data.len() { return Err("trailing JSON data".into()); }
     Ok(value)
 }
+
+pub fn stringify(value: &Json) -> String {
+    match value {
+        Json::Null => "null".into(),
+        Json::Bool(v) => v.to_string(),
+        Json::Number(n) => n.to_string(),
+        Json::Text(s) => {
+            let mut out = String::from("\"");
+            for c in s.chars() {
+                match c {
+                    '"' => out.push_str("\\\""), '\\' => out.push_str("\\\\"),
+                    '\n' => out.push_str("\\n"), '\r' => out.push_str("\\r"),
+                    '\t' => out.push_str("\\t"),
+                    c if c < '\u{0020}' => out.push_str(&format!("\\u{:04x}", c as u32)),
+                    c => out.push(c),
+                }
+            }
+            out.push('"');
+            out
+        }
+        Json::Array(values) => format!("[{}]", values.iter().map(stringify).collect::<Vec<_>>().join(",")),
+        Json::Object(values) => {
+            let pairs = values.iter().map(|(k,v)| format!("{}:{}", stringify(&Json::Text(k.clone())), stringify(v)));
+            format!("{{{}}}", pairs.collect::<Vec<_>>().join(","))
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
