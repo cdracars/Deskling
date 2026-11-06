@@ -21,9 +21,24 @@ done
 cargo run --offline --locked -p deskling-avatar-factory -- demo "$factory_root/rig-demo-source"
 cargo run --offline --locked -p deskling-avatar-factory -- rig "$factory_root/rig-demo-source/rig.json" "$factory_root/rig-demo-pack"
 cargo run --offline --locked -p deskling-avatar-factory -- inspect "$factory_root/rig-demo-pack/pack.json"
+cargo run --offline --locked -p deskling-avatar-factory -- \
+    pose "$factory_root/rig-demo-source/rig.json" wave 6 "$factory_root/studio-preview.png"
+test -s "$factory_root/studio-preview.png"
 cargo test --offline --locked -p deskling-core
 cargo test --offline --locked -p deskling-desktop
 mkdir -p test-output
+c++ -std=c++17 -fPIC -Wall -Wextra -pthread \
+    tests/avatar_studio_test.cpp \
+    $(pkg-config --cflags --libs Qt6Widgets) -o test-output/avatar-studio-tests
+./test-output/avatar-studio-tests "$factory_root/rig-demo-source/rig.json"
+c++ -std=c++17 -fPIC -Wall -Wextra -pthread \
+    tools/avatar-studio/main.cpp \
+    $(pkg-config --cflags --libs Qt6Widgets) -o test-output/deskling-avatar-studio
+QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
+    ./test-output/deskling-avatar-studio \
+    --rig "$factory_root/rig-demo-source/rig.json" \
+    --renderer "$PWD/target/debug/deskling-avatar-factory" \
+    --smoke-test --capture "$PWD/test-output/avatar-studio-smoke.png"
 # Standard system Qt paths; use the same compiler family as the application.
 ${CXX:-c++} -std=c++17 -fPIC -Wall -Wextra \
     tests/pack_test.cpp crates/deskling-desktop/native/pack.cpp \
