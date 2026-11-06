@@ -4,7 +4,7 @@
 use std::os::raw::{c_int, c_ulong};
 
 #[link(name = "z")]
-unsafe extern "C" {
+extern "C" {
     fn uncompress(dest: *mut u8, dest_len: *mut c_ulong, src: *const u8, src_len: c_ulong) -> c_int;
     fn compress2(dest: *mut u8, dest_len: *mut c_ulong, src: *const u8, src_len: c_ulong, level: c_int) -> c_int;
     fn compressBound(source_len: c_ulong) -> c_ulong;
