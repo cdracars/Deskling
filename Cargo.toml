@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/deskling-core", "crates/deskling-desktop"]
+members = ["crates/deskling-core", "crates/deskling-desktop", "tools/avatar-factory"]
 default-members = ["crates/deskling-desktop"]
 resolver = "2"
 
