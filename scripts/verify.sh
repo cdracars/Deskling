@@ -4,6 +4,8 @@ set -eu
 cd "$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 python3 -m unittest discover -s tests -v
 cargo test --offline --locked -p deskling-avatar-factory
+cargo run --offline --locked -p deskling-avatar-factory -- inspect assets/characters/cyber-gremlin/pack.json
+cargo run --offline --locked -p deskling-avatar-factory -- inspect assets/characters/kipwick-alpha/pack.json
 cargo test --offline --locked -p deskling-core
 cargo test --offline --locked -p deskling-desktop
 mkdir -p test-output
