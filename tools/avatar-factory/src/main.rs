@@ -3,6 +3,7 @@
 //! and rebuild a deterministic schema-1 runtime atlas on Linux.
 mod json;
 mod png;
+mod rig;
 use json::{field, only, Json};
 use png::Image;
 use std::collections::{BTreeMap, HashMap};
@@ -309,7 +310,8 @@ fn run() -> Result<()> {
         [_, command, path] if command == "inspect" => inspect(Path::new(path)),
         [_, command, input, output] if command == "extract" => extract(Path::new(input), Path::new(output)),
         [_, command, input, output] if command == "build" => build(Path::new(input), Path::new(output)),
-        _ => Err("Usage:\n  deskling-avatar-factory inspect <pack.json>\n  deskling-avatar-factory extract <pack.json> <new-empty-project-dir>\n  deskling-avatar-factory build <project.json> <new-empty-output-dir>".into()),
+        [_, command, input, output] if command == "rig" => rig::build(Path::new(input), Path::new(output)),
+        _ => Err("Usage:\n  deskling-avatar-factory inspect <pack.json>\n  deskling-avatar-factory extract <pack.json> <new-empty-project-dir>\n  deskling-avatar-factory build <project.json> <new-empty-output-dir>\n  deskling-avatar-factory rig <rig.json> <new-empty-output-dir>".into()),
     }
 }
 fn main() {
