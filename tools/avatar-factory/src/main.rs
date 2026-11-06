@@ -29,7 +29,7 @@ fn text(s: impl Into<String>) -> Json { Json::Text(s.into()) }
 fn num(n: u32) -> Json { Json::Number(n as f64) }
 fn get_text(map: &BTreeMap<String, Json>, key: &str, max: usize) -> Result<String> {
     let s = field(map, key)?.string()?;
-    if s.trim().is_empty() || s.chars().count() > max || s.chars().any(|c| c.is_control()) || s.contains(['<', '>']) {
+    if s.trim().is_empty() || s.chars().count() > max || s.chars().any(|c| c.is_control()) || (s.contains('<') || s.contains('>')) {
         return Err(format!("'{key}' must be nonempty plain text (max {max} characters)"));
     }
     Ok(s.to_string())
@@ -52,7 +52,7 @@ fn parse_pack(root: &Json) -> Result<Pack> {
     let name = get_text(m, "name", 128)?;
     let sheet = get_text(m, "spriteSheet", 255)?;
     if !sheet.to_ascii_lowercase().ends_with(".png") || sheet.eq_ignore_ascii_case(".png") ||
-        sheet.contains(['/', '\\', ':']) || sheet == "." || sheet == ".." {
+        (sheet.contains('/') || sheet.contains('\\') || sheet.contains(':')) || sheet == "." || sheet == ".." {
         return Err("spriteSheet must be a local PNG basename".into());
     }
     let width = get_int(m, "cellWidth", 16, 512)?;
