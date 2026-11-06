@@ -17,6 +17,10 @@ for character in cyber-gremlin kipwick-alpha; do
     cargo run --offline --locked -p deskling-avatar-factory -- \
         inspect "$factory_root/$character-export/pack.json"
 done
+# Build original layered source art and compose a real reusable rig.
+cargo run --offline --locked -p deskling-avatar-factory -- demo "$factory_root/rig-demo-source"
+cargo run --offline --locked -p deskling-avatar-factory -- rig "$factory_root/rig-demo-source/rig.json" "$factory_root/rig-demo-pack"
+cargo run --offline --locked -p deskling-avatar-factory -- inspect "$factory_root/rig-demo-pack/pack.json"
 cargo test --offline --locked -p deskling-core
 cargo test --offline --locked -p deskling-desktop
 mkdir -p test-output
@@ -38,3 +42,10 @@ QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
     ./target/release/deskling-desktop --pack "$factory_root/kipwick-alpha-export/pack.json" \
     --smoke-test --capture test-output/kipwick-factory-smoke.png
+QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software \
+    ./target/release/deskling-desktop --pack "$factory_root/rig-demo-pack/pack.json" \
+    --smoke-test --capture test-output/rig-demo-smoke.png
+# Expose an inspectable, isolated proof artifact on the CI runner.
+cp -R "$factory_root/rig-demo-pack" test-output/rig-demo-pack
+cp -R "$factory_root/rig-demo-source" test-output/rig-demo-source
+

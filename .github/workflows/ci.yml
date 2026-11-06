@@ -25,5 +25,15 @@ jobs:
           pkg-config --modversion Qt6Core Qt6Quick
       - name: Verify source, core, packs, build and rendered item
         run: sh scripts/verify.sh
+      - name: Publish synthetic Rust rig preview and pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: deskling-rust-rig-demo
+          path: |
+            test-output/rig-demo-pack/
+            test-output/rig-demo-source/
+            test-output/rig-demo-smoke.png
+          if-no-files-found: error
+          retention-days: 14
       - name: Validate Linux launcher
         run: desktop-file-validate packaging/linux/deskling.desktop
