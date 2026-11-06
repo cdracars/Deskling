@@ -63,7 +63,7 @@ It breathes, previews short gestures, and waves on a single click. Right-click o
 controls and Quit. See the [alpha pack's testing notes](assets/characters/kipwick-alpha/README.md)
 for isolated trial settings and the native-desktop checks still needed.
 
-To inspect, extract, or rebuild existing animation packs using an offline **Rust** tool, see [Avatar Factory](docs/AVATAR_FACTORY.md). The builder validates approved RGBA frames; it does not yet generate the artwork or motion.
+To inspect, extract, or rebuild existing animation packs using an offline **Rust** tool, see [Avatar Factory](docs/AVATAR_FACTORY.md). The builder validates and repacks approved RGBA frames. The new layered Rust rig animates reusable character parts with joint transforms, but does not invent or segment character artwork.
 
 See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is a template and intentionally has no accompanying artwork.
 
