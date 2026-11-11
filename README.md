@@ -95,6 +95,24 @@ The deliberately narrow validator accepts ASCII DNS hostnames and opaque URI pat
 
 Settings contain only the saved link, scale and position, normally in `$XDG_CONFIG_HOME/Deskling/desktop.ini` or `~/.config/Deskling/desktop.ini`. The link is plain text with private file permissions, not encrypted. Character packs remain separate local files. No settings or private packs belong in this repository.
 
+## Screen Assist — manual review prototype
+
+Screen Assist is **not an AI model and does not automatically understand your screen**.
+In Deskling controls, choose **Review this monitor…**. The companion briefly
+hides itself, captures the monitor in a local in-memory preview, then restores
+the app. Inspect the image carefully: it may include passwords, customer
+records, private messages or other sensitive work information. Choose **Copy
+screenshot to clipboard** only when you intend to paste it into an approved
+application, or **Discard and close** to remove the Deskling preview.
+
+No screenshot is stored to disk or uploaded by Deskling. Copying puts the image
+on the system clipboard, where other desktop applications may be able to access
+it. Closing the review preview **does not clear a previously copied clipboard**.
+The feature is X11-only and needs a live desktop validation; automated Qt
+offscreen tests cannot establish that your window manager captures correctly.
+There is no OCR, automatic assistance, model connection or passive surveillance.
+See [the Screen Assist architecture and safety decision](docs/ADR_004_SCREEN_ASSIST.md).
+
 ## Verify
 
 ```sh

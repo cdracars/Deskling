@@ -1,5 +1,6 @@
 #include "bridge.hpp"
 #include "pack.hpp"
+#include <QClipboard>
 #include <QCoreApplication>
 #include <QCursor>
 #include <QDebug>
@@ -10,6 +11,8 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QImage>
+#include <QMutexLocker>
+#include <QQuickImageProvider>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickItem>
@@ -24,6 +27,23 @@
 #include <sys/stat.h>
 
 extern "C" bool deskling_validate_link_url(const char *url);
+
+// Images are exposed only to Deskling's own QML preview. The provider never
+// loads a file, sends a network request, or retains an image after discard.
+class ScreenReviewProvider final : public QQuickImageProvider {
+public:
+    explicit ScreenReviewProvider(const Bridge *bridge)
+        : QQuickImageProvider(QQuickImageProvider::Image), m_bridge(bridge) {}
+    QImage requestImage(const QString &, QSize *size, const QSize &requestedSize) override {
+        QImage image = m_bridge->screenReviewImage();
+        if (size) *size = image.size();
+        if (!image.isNull() && requestedSize.isValid())
+            return image.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        return image;
+    }
+private:
+    const Bridge *m_bridge;
+};
 
 // Keep the resource initializer in C++ linkage, outside the C ABI entry point.
 static void initResources() { Q_INIT_RESOURCE(deskling); }
@@ -130,6 +150,87 @@ bool Bridge::openLink() {
     return true;
 }
 
+bool Bridge::screenReviewReady() const {
+    QMutexLocker lock(&m_screenReviewMutex);
+    return !m_screenReview.isNull();
+}
+
+QImage Bridge::screenReviewImage() const {
+    QMutexLocker lock(&m_screenReviewMutex);
+    return m_screenReview;
+}
+
+void Bridge::clearScreenReview() {
+    {
+        QMutexLocker lock(&m_screenReviewMutex);
+        m_screenReview = QImage();
+        ++m_screenReviewVersion;
+    }
+    emit screenReviewChanged();
+}
+
+bool Bridge::captureScreenReview() {
+    if (m_smokeTest) {
+        setStatus("Screen capture is disabled during automated smoke tests.");
+        return false;
+    }
+    if (!m_window) {
+        setStatus("No desktop window is available for screen review.");
+        return false;
+    }
+    QScreen *screen = m_window->screen();
+    if (!screen) screen = QGuiApplication::screenAt(m_window->geometry().center());
+    if (!screen) {
+        setStatus("Cannot identify an X11 monitor. Screen review was not started.");
+        return false;
+    }
+    // Avoid excessive memory allocation on large/malformed virtual desktops.
+    const QSize geometry = screen->geometry().size();
+    if (geometry.width() <= 0 || geometry.height() <= 0
+        || static_cast<qint64>(geometry.width()) * geometry.height() > 16000000LL) {
+        setStatus("This monitor is too large to capture safely (limit: 16 million pixels).");
+        return false;
+    }
+    // Capture only when explicitly invoked by the UI. QML hides Deskling's
+    // own window before calling, to avoid capturing the companion and controls.
+    const QPixmap snapshot = screen->grabWindow(0);
+    if (snapshot.isNull() || snapshot.width() <= 0 || snapshot.height() <= 0
+        || static_cast<qint64>(snapshot.width()) * snapshot.height() > 16000000LL) {
+        setStatus("Screen capture failed. Confirm an active composited X11 desktop.");
+        return false;
+    }
+    const QImage image = snapshot.toImage().convertToFormat(QImage::Format_RGBA8888);
+    if (image.isNull()) {
+        setStatus("Screen capture returned an unreadable image.");
+        return false;
+    }
+    {
+        QMutexLocker lock(&m_screenReviewMutex);
+        m_screenReview = image;
+        ++m_screenReviewVersion;
+    }
+    emit screenReviewChanged();
+    setStatus("Captured locally for review. No image has been shared or copied.");
+    return true;
+}
+
+bool Bridge::copyScreenReview() {
+    QImage image = screenReviewImage();
+    if (image.isNull()) {
+        setStatus("There is no reviewed image to copy.");
+        return false;
+    }
+    if (!QGuiApplication::clipboard()) {
+        setStatus("The desktop clipboard is unavailable.");
+        return false;
+    }
+    // The clipboard belongs to the user/desktop and can be read by other apps.
+    // Never place screenshots there without an explicit button click.
+    QGuiApplication::clipboard()->setImage(image, QClipboard::Clipboard);
+    setStatus("Screenshot copied to the desktop clipboard. Paste only into an approved app.");
+    return true;
+}
+
 void Bridge::beginDrag() {
     if (!m_window) return;
     m_dragPointer = QCursor::pos();
@@ -215,7 +316,13 @@ extern "C" int deskling_run(int argc, char **argv, const char *linkUrl,
         return 8;
     }
     Bridge bridge(smokeTest, linkUrl ? QString::fromUtf8(linkUrl) : QString());
+    if (smokeTest && (bridge.captureScreenReview() || bridge.copyScreenReview()
+                      || bridge.screenReviewReady())) {
+        qCritical("SMOKE FAIL: screen review or clipboard write was allowed without user action.");
+        return 10;
+    }
     QQmlApplicationEngine engine;
+    engine.addImageProvider(QStringLiteral("deskling-screen-review"), new ScreenReviewProvider(&bridge));
     engine.rootContext()->setContextProperty("bridge", &bridge);
     engine.rootContext()->setContextProperty("characterPack", characterPack);
     engine.load(QUrl(QStringLiteral("qrc:/deskling/Main.qml")));

@@ -21,6 +21,7 @@ Window {
     property int frame: 0
     property bool dragging: false
     property bool waving: false
+    property bool screenReviewCapturePending: false
     readonly property var animations: characterPack.animations
     readonly property var frameCounts: {
         var values = []
@@ -130,6 +131,34 @@ Window {
     function openLink() {
         if (!bridge.openLink()) showControls()
     }
+    function beginScreenReview() {
+        if (screenReviewCapturePending) return
+        // Never capture on startup, hover, idle or a timer without a user click.
+        screenReviewCapturePending = true
+        bridge.clearScreenReview()
+        controls.hide()
+        pet.hide()
+        screenReviewDelay.start()
+    }
+
+    Timer {
+        id: screenReviewDelay
+        interval: 300
+        repeat: false
+        onTriggered: {
+            if (!pet.screenReviewCapturePending) return
+            var succeeded = bridge.captureScreenReview()
+            pet.show()
+            pet.screenReviewCapturePending = false
+            if (succeeded) {
+                screenReviewWindow.show()
+                screenReviewWindow.raise()
+                screenReviewWindow.requestActivate()
+            } else {
+                pet.showControls()
+            }
+        }
+    }
 
     Item {
         id: sprite
@@ -230,6 +259,92 @@ Window {
 
     onClosing: Qt.quit()
 
+
+    Window {
+        id: screenReviewWindow
+        objectName: "screenReviewWindow"
+        title: "Deskling · Screen review"
+        width: Math.min(980, Screen.desktopAvailableWidth - 32)
+        height: Math.min(740, Screen.desktopAvailableHeight - 32)
+        visible: false
+        color: "#101722"
+        flags: Qt.Window | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
+        onClosing: bridge.clearScreenReview()
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 18
+            spacing: 12
+            Text {
+                text: "Review your screen before sharing"
+                color: "#62edf4"
+                font.bold: true
+                font.pixelSize: 21
+            }
+            Text {
+                Layout.fillWidth: true
+                text: "This is the whole monitor, which may include passwords, customer records or private conversations. No screenshot is sent anywhere. Copy only if your chosen assistant is approved to receive this content."
+                wrapMode: Text.WordWrap
+                color: "#ccd5e1"
+                font.pixelSize: 13
+            }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "#222a36"
+                border.color: "#46556a"
+                radius: 8
+                clip: true
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    asynchronous: false
+                    cache: false
+                    fillMode: Image.PreserveAspectFit
+                    source: bridge.screenReviewReady ? "image://deskling-screen-review/current-" + bridge.screenReviewVersion : ""
+                }
+            }
+            Text {
+                Layout.fillWidth: true
+                text: "Try asking your approved assistant: ‘Improve the wording on this screen.’ · ‘What looks wrong here?’ · ‘What should I do next?’"
+                color: "#ccd5e1"
+                font.pixelSize: 13
+                wrapMode: Text.WordWrap
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                Button {
+                    objectName: "copyScreenReviewButton"
+                    text: "Copy screenshot to clipboard"
+                    enabled: bridge.screenReviewReady
+                    onClicked: bridge.copyScreenReview()
+                }
+                Button {
+                    objectName: "openSavedLinkAfterReviewButton"
+                    text: "Open saved browser link"
+                    enabled: bridge.linkUrl.length > 0
+                    onClicked: bridge.openLink()
+                }
+                Item { Layout.fillWidth: true }
+                Button {
+                    objectName: "discardScreenReviewButton"
+                    text: "Discard and close"
+                    onClicked: {
+                        bridge.clearScreenReview()
+                        screenReviewWindow.close()
+                    }
+                }
+            }
+            Text {
+                Layout.fillWidth: true
+                text: bridge.status
+                color: "#90e5e9"
+                wrapMode: Text.WordWrap
+                font.pixelSize: 12
+            }
+        }
+    }
+
     Window {
         id: controls
         objectName: "controlsWindow"
@@ -266,6 +381,27 @@ Window {
                     color: "#ccd5e1"
                     wrapMode: Text.WordWrap
                     font.pixelSize: 14
+                }
+                Rectangle { Layout.fillWidth: true; height: 1; color: "#29364a" }
+                Label {
+                    text: "SCREEN ASSIST · MANUAL REVIEW"
+                    color: "#96a6ba"
+                    font.pixelSize: 11
+                    font.bold: true
+                }
+                Button {
+                    objectName: "screenReviewButton"
+                    text: "Review this monitor…"
+                    Layout.fillWidth: true
+                    enabled: !pet.screenReviewCapturePending
+                    onClicked: pet.beginScreenReview()
+                }
+                Text {
+                    Layout.fillWidth: true
+                    text: "Shows a preview before you choose to copy. Deskling does not analyze, upload or automatically share screenshots. This monitor may contain private information."
+                    color: "#96a6ba"
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 12
                 }
                 Rectangle { Layout.fillWidth: true; height: 1; color: "#29364a" }
                 Label { text: "OPTIONAL BROWSER SHORTCUT"; color: "#96a6ba"; font.pixelSize: 11; font.bold: true }
