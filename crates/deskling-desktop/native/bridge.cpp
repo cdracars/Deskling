@@ -316,6 +316,11 @@ extern "C" int deskling_run(int argc, char **argv, const char *linkUrl,
         return 8;
     }
     Bridge bridge(smokeTest, linkUrl ? QString::fromUtf8(linkUrl) : QString());
+    if (smokeTest && (bridge.captureScreenReview() || bridge.copyScreenReview()
+                      || bridge.screenReviewReady())) {
+        qCritical("SMOKE FAIL: screen review or clipboard write was allowed without user action.");
+        return 10;
+    }
     QQmlApplicationEngine engine;
     engine.addImageProvider(QStringLiteral("deskling-screen-review"), new ScreenReviewProvider(&bridge));
     engine.rootContext()->setContextProperty("bridge", &bridge);
