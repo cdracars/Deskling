@@ -21,6 +21,10 @@ The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/RE
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
 
+## Product direction and two-iteration plan
+
+Deskling's adoption-first product constitution, C4 architecture and two-iteration plan are **proposed engineering documents**, not a commercial launch approval. Start with the [product brief](docs/PRODUCT_BRIEF.md), [constitution](docs/PRODUCT_CONSTITUTION.md), [feature roadmap](docs/FEATURE_ROADMAP.md), [C4 architecture](docs/ARCHITECTURE_C4.md), [Haiku team execution contract](docs/TEAM_EXECUTION.md), [two-iteration delivery plan](docs/ITERATION_PLAN.md) and [product discussion guide](docs/PRODUCT_CONVERSATION.md). The work is tracked as [Iteration-1 GitHub issues](https://github.com/cdracars/Deskling/issues?q=is%3Aissue+is%3Aopen+I1).
+
 ## Build without installing Deskling
 
 Requirements: Rust/Cargo 1.70+, C++17 compiler, `ar`, `pkg-config`, Qt 6.4+ development tools (`moc`, `rcc`), and the Qt Quick/QML runtime modules used by the UI. Python 3 is used for source tests; Node.js is optional for scheduler tests.
