@@ -69,6 +69,27 @@ The new [Rust-powered **Avatar Studio**](docs/AVATAR_STUDIO.md) provides a visua
 
 See [character packs](docs/CHARACTER_PACKS.md). The separate example manifest is a template and intentionally has no accompanying artwork.
 
+## Quick local trial (Ubuntu 24.04 / X11)
+
+To try the existing development-only characters with isolated settings, from the
+repository root and inside an X11 desktop terminal:
+
+```sh
+sh scripts/try-deskling.sh                      # Kipwick alpha
+sh scripts/try-deskling.sh --character gremlin
+sh scripts/try-deskling.sh --character diagnostic
+```
+
+The trial script uses the existing release executable, or runs the local
+`cargo build --offline --locked --release` after checking prerequisites.
+Nothing is installed, autostart is never enabled, and temporary settings
+are removed after Deskling quits. The script does not reuse your normal
+Deskling position, scale or browser shortcut settings. Right-click the
+character for Pause and Quit. Run `sh scripts/try-deskling.sh --help` for
+the options. This is an **opt-in developer test**, not an installed release
+or a claim of cleared commercial artwork rights. Qt runtime modules and a
+working composited X11 session are still required.
+
 ## Application icon and optional launcher
 
 The selected **Kipwick portrait** is embedded as Deskling's application/window icon in eight sizes, from 16 to 512 pixels. It is separate from the static mascot illustration above and does not replace the diagnostic shape or load a character pack.
