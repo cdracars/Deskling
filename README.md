@@ -21,6 +21,10 @@ The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/RE
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
 
+## Product direction and planning
+
+Deskling's product and service planning uses **ITIL 4 and CSDM 5**. The current phase is **planning and strategy only**; these documents do not authorize implementation or release. Start with the [product brief](docs/PRODUCT_BRIEF.md), [constitution](docs/PRODUCT_CONSTITUTION.md), [service model and decisions](docs/SERVICE_MODEL.md), [opportunity roadmap](docs/FEATURE_ROADMAP.md), [two planning gates](docs/ITERATION_PLAN.md), [conditional team model](docs/TEAM_EXECUTION.md) and [product discussion guide](docs/PRODUCT_CONVERSATION.md). The [technical baseline](docs/TECHNICAL_BASELINE.md) preserves current-system evidence and optional diagrams; it does not govern the product plan. Existing issues are candidate scope, not instructions to begin development.
+
 ## Build without installing Deskling
 
 Requirements: Rust/Cargo 1.70+, C++17 compiler, `ar`, `pkg-config`, Qt 6.4+ development tools (`moc`, `rcc`), and the Qt Quick/QML runtime modules used by the UI. Python 3 is used for source tests; Node.js is optional for scheduler tests.
