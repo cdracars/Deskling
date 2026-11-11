@@ -21,6 +21,27 @@ The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/RE
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
 
+## Quick local trial (Ubuntu 24.04 / X11)
+
+To try the existing development-only characters with isolated settings, from the
+repository root and inside an X11 desktop terminal:
+
+```sh
+sh scripts/try-deskling.sh                      # Kipwick alpha
+sh scripts/try-deskling.sh --character gremlin
+sh scripts/try-deskling.sh --character diagnostic
+```
+
+The trial script uses the existing release executable, or runs the local
+`cargo build --offline --locked --release` after checking prerequisites.
+Nothing is installed, autostart is never enabled, and temporary settings
+are removed after Deskling quits. The script does not reuse your normal
+Deskling position, scale or browser shortcut settings. Right-click the
+character for Pause and Quit. Run `sh scripts/try-deskling.sh --help` for
+the options. This is an **opt-in developer test**, not an installed release
+or a claim of cleared commercial artwork rights. Qt runtime modules and a
+working composited X11 session are still required.
+
 ## Build without installing Deskling
 
 Requirements: Rust/Cargo 1.70+, C++17 compiler, `ar`, `pkg-config`, Qt 6.4+ development tools (`moc`, `rcc`), and the Qt Quick/QML runtime modules used by the UI. Python 3 is used for source tests; Node.js is optional for scheduler tests.
