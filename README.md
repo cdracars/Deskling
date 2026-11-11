@@ -21,9 +21,9 @@ The unfinished [Kipwick alpha animation pack](assets/characters/kipwick-alpha/RE
 
 Only X11 is targeted. Compositor/window-manager behavior still needs desktop testing; this is not a claim of support for all Linux desktops. Wayland support, connectors, audio, packaging, roaming and click-through behavior are future work.
 
-## Product direction and two-iteration plan
+## Product direction and planning
 
-Deskling's adoption-first product constitution, C4 architecture and two-iteration plan are **proposed engineering documents**, not a commercial launch approval. Start with the [product brief](docs/PRODUCT_BRIEF.md), [constitution](docs/PRODUCT_CONSTITUTION.md), [feature roadmap](docs/FEATURE_ROADMAP.md), [C4 architecture](docs/ARCHITECTURE_C4.md), [Haiku team execution contract](docs/TEAM_EXECUTION.md), [two-iteration delivery plan](docs/ITERATION_PLAN.md) and [product discussion guide](docs/PRODUCT_CONVERSATION.md). The work is tracked as [Iteration-1 GitHub issues](https://github.com/cdracars/Deskling/issues?q=is%3Aissue+is%3Aopen+I1).
+Deskling's product and service planning uses **ITIL 4 and CSDM 5**. The current phase is **planning and strategy only**; these documents do not authorize implementation or release. Start with the [product brief](docs/PRODUCT_BRIEF.md), [constitution](docs/PRODUCT_CONSTITUTION.md), [service model and decisions](docs/SERVICE_MODEL.md), [opportunity roadmap](docs/FEATURE_ROADMAP.md), [two planning gates](docs/ITERATION_PLAN.md), [conditional team model](docs/TEAM_EXECUTION.md) and [product discussion guide](docs/PRODUCT_CONVERSATION.md). The [technical baseline](docs/TECHNICAL_BASELINE.md) preserves current-system evidence and optional diagrams; it does not govern the product plan. Existing issues are candidate scope, not instructions to begin development.
 
 ## Build without installing Deskling
 

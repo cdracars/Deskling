@@ -1,9 +1,17 @@
 # Deskling Product Constitution
 
-**Status:** Proposed architecture baseline; business sponsorship and product approval are not yet assigned.  
+**Status:** Planning and strategy only. ITIL 4 and CSDM 5 govern product and service planning; business sponsorship and product approval remain unassigned.  
 **Baseline:** `main` at `b41ff3daf29967fa0b35b290f6d9ae1218393ec6` (2026-11-06).  
 **Scope:** The Deskling Linux desktop companion and its Avatar Factory/Studio authoring tools.  
 **Purpose:** Govern the next two iterations and produce a credible, evidence-backed product discussion. Not a declaration of a commercial launch.
+
+## Governing framework and current authority
+
+Use **ITIL 4** for value creation, service relationships, the four dimensions, relevant management practices and continual improvement. Use **CSDM 5** for the conceptual product, capability, ownership and lifecycle model. [Service model and decisions](SERVICE_MODEL.md) applies these frameworks to Deskling.
+
+C4 is optional notation for technical diagrams only. The former C4-led product plan is retired. Current-system evidence is retained in [Technical baseline](TECHNICAL_BASELINE.md); it cannot authorize product scope.
+
+**Remain in planning and strategy until implementation is explicitly authorized.** Do not create implementation branches, change application code, launch development agents, merge PRs or deploy based solely on brainstorming or a planning document. Authorized planning-document corrections do not open an implementation phase.
 
 ## Article I — Product mission
 
@@ -30,8 +38,8 @@ The value hypothesis, **not yet validated by customers**, is that expressive des
 
 | Decision | Accountable role | Operating rule |
 | --- | --- | --- |
-| Engineering architecture, interfaces, ADRs and technical tradeoffs | Lead architect (assistant in this engagement) | Can propose and prepare reversible changes; reviews against constitution and tests. |
-| Engineering delivery and code quality | Engineering implementer / lead (assigned per issue) | Implements from approved criteria; independent reviewer verifies. Codex may fill this role where available. |
+| Engineering architecture, interfaces, ADRs and technical tradeoffs | Lead architect (assistant in this engagement) | Makes routine architecture recommendations and prepares planning artifacts; code changes require explicit implementation authorization. |
+| Engineering delivery and code quality | Engineering implementer / lead (assigned per issue) | Implements only within explicit authorization and approved criteria; independent reviewer verifies. |
 | Customer segment, positioning, pricing, funding, distribution and commercial licensing | **Product/business sponsor: TBD** | Must be decided by a human authorized by the organization. The repository owner is **not presumed** to be this sponsor. |
 | Character art approval and reuse rights | Art/brand owner and legal/IP reviewer: TBD | Written provenance and distribution permission are required before release. |
 | Privacy/security exceptions and agent capabilities | Assigned security/privacy reviewer and authorized approver: TBD | No permission expansion, surveillance or credential handling by architectural assumption. |
@@ -41,14 +49,14 @@ The lead architect should resolve normal technical choices without asking the us
 
 ## Article IV — Decision and escalation policy
 
-- **Decide locally:** reversible component boundaries, testing strategy, code organization, docs, UX prototypes in isolated branches, and technical evaluation criteria.
+- **Decide locally during planning:** conceptual component boundaries, testing strategy, documentation, technical evaluation criteria and recommendations. Implemented UX prototypes, code changes and development branches require explicit authorization.
 - **Record as ADR:** material tradeoffs affecting security, packaging, runtime/authoring boundaries, target OS, character delivery or integration contracts.
 - **Elevate to authorized humans:** product-market claims, target audience commitment, revenue model, artwork rights, distribution license, collection/processing of personal data, broad system permissions, release publication and irreversible changes.
 - **Do not invent approval:** absence of an owner is `UNASSIGNED`, not implied consent. No AI service or cron principal may approve a human-only gate.
 
 ## Article V — Delivery discipline
 
-Every feature travels through:
+After explicit implementation authorization, every feature travels through:
 
 1. Product hypothesis or observed problem with a named user-facing outcome.
 2. Short behavior specification: normal path, invalid input, interruption/rollback and quality thresholds.
@@ -60,12 +68,16 @@ Every feature travels through:
 
 **Definition of Done:** requirements trace to tests; automated suite for the exact commit passes; manual desktop checks are attached when necessary; known gaps are explicit; documentation and changelog/decision record are updated; release authority has not been bypassed.
 
-## Article VI — Two-iteration product discussion gate
+## Article VI — Two planning gates
 
-By the end of Iteration 2, the product conversation must have: (a) a running, recorded local demo; (b) a clear proposition and target-user hypotheses; (c) a reproducible install/build/test path; (d) C4 architectural views; (e) risks and licensing gaps; (f) explicit choices requiring sponsorship; and (g) evidence versus speculation called out separately. **This is a discovery/pilot decision gate, not a release promise.**
+**Iteration 1: Discovery and product definition.** Establish current state, consumer outcomes, audience hypotheses, opportunity backlog, platform and rights constraints, and prioritized questions.
+
+**Iteration 2: Product readiness and adoption planning.** Refine proposed offerings, conceptual architecture, technical feasibility, operating responsibilities, support, privacy, cost drivers and an evidence-backed product discussion.
+
+Exit with a product opportunity assessment, ITIL 4 service value assessment, CSDM 5 conceptual model, decision register, roadmap, adoption/support proposal and explicit choices requiring sponsorship. Record missing live-demo or consumer evidence rather than treating planning as permission to build it. These gates do not authorize implementation, research outreach, a pilot or release. See [Iteration plan](ITERATION_PLAN.md).
 
 ## Article VII — Amendment process
 
 Change this constitution in a reviewed pull request with: rationale, impacted principles, alternatives, evidence, risk, and an owner of the approval. Security/privacy and distribution-rights constraints cannot be waived by a routine technical PR. Record the decision in an ADR. Product/business ownership remains unassigned until a legitimate sponsor accepts it.
 
-**Companion documents:** [Product brief](PRODUCT_BRIEF.md) · [C4 architecture](ARCHITECTURE_C4.md) · [Two-iteration delivery](ITERATION_PLAN.md) · [Product discussion](PRODUCT_CONVERSATION.md).
+**Companion documents:** [Product brief](PRODUCT_BRIEF.md) · [Service model](SERVICE_MODEL.md) · [Technical baseline](TECHNICAL_BASELINE.md) · [Two planning gates](ITERATION_PLAN.md) · [Product discussion](PRODUCT_CONVERSATION.md).

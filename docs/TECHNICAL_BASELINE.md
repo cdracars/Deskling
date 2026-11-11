@@ -1,8 +1,8 @@
-# Deskling C4 Architecture — Current and Proposed
+# Deskling technical baseline
 
-**Status:** Repository-backed baseline with forward-looking decisions explicitly marked.  
+**Status:** Current-system evidence and optional technical diagrams. This is not a product plan or implementation authorization. ITIL 4 and CSDM 5 govern planning through the [service model](SERVICE_MODEL.md) and [constitution](PRODUCT_CONSTITUTION.md).  
 **Code baseline:** `main` `b41ff3daf29967fa0b35b290f6d9ae1218393ec6`.  
-**Model:** [C4 architecture](https://c4model.com/introduction): Context, Container, Component, Code. Containers in C4 mean applications/data stores, **not Docker**.
+**Optional diagram notation:** [C4 architecture](https://c4model.com/introduction): Context, Container, Component, Code. Containers in C4 mean applications/data stores, **not Docker**.
 
 ## Level 1 — System context (current)
 
@@ -66,13 +66,6 @@ flowchart LR
 
 No invented classes/services are required to tell the current code story. A deep code diagram is not warranted until a component is complex enough to justify it.
 
-## Proposed changes — Iterations 1 and 2, **not current state**
-
-1. **First-run experience / selected pack path:** an explicit character choice with persisted local reference and a safe fallback when a selected pack is missing or invalid. Keep CLI `--pack` authoritative for one-off tests. Decide whether the chosen art is distributable before bundling it.
-2. **Consistent demo install/launch:** separate an isolated test kit from a later release package. No install/autostart by default. Document supported Ubuntu/X11 and Qt dependencies.
-3. **Authoring-to-runtime feedback:** help creators find visual defects and run exported packs; do not replace native loader contract with a novel format without ADR.
-4. **Optional future integrations:** if justified by the sponsor, add an explicit permissioned adapter/port outside the character pack and animation scheduler. **No connector is authorized or implemented in this iteration.**
-
 ## Trust boundaries and architectural risks
 
 - Local pack input is untrusted data. Continue strict local-only paths, manifest schema limits, PNG validation and resource caps. Avoid live code/plugin execution inside a pack.
@@ -82,10 +75,6 @@ No invented classes/services are required to tell the current code story. A deep
 - Character assets have separate licensing from MIT application code. Record rights before distribution.
 - Pack format schema 1 is the current compatibility boundary; preserve loader behavior and regression fixtures.
 
-## Architecture decisions pending
+## Planning references
 
-**ADR-001:** First-run character selection and fallback strategy.  
-**ADR-002:** Supported distribution/test-kit approach and uninstall contract.  
-**ADR-003 (defer):** Whether adapters exist at all, based on product evidence and explicit permission boundaries.
-
-Do not represent these proposals as implemented. See [constitution](PRODUCT_CONSTITUTION.md) and [iteration plan](ITERATION_PLAN.md).
+Potential changes are evaluated in the [opportunity roadmap](FEATURE_ROADMAP.md) and [service decision register](SERVICE_MODEL.md). They are not assigned to implementation iterations. Existing code diagrams and repository links remain useful evidence without making C4 the governing plan.

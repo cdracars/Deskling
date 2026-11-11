@@ -1,55 +1,47 @@
-# Deskling — Product Hypothesis and Brief
+# Deskling product opportunity brief
 
-**Status:** Working hypothesis for a product discovery meeting. Not an approved business plan.  
-**Product stage:** Source prototype with merged authoring pipeline; no public binary release.  
-**Baseline evidence:** [README](../README.md) · [Avatar Factory](AVATAR_FACTORY.md) · [Avatar Studio](AVATAR_STUDIO.md) · [main CI](https://github.com/cdracars/Deskling/actions/runs/42234626006).
+**Status:** Planning hypothesis, not an approved business plan, implementation assignment or enterprise service.
+**Foundation:** [ITIL 4 and CSDM 5](SERVICE_MODEL.md).
+**Goal:** A credible product and organizational adoption conversation after two planning gates.
 
-## The one-sentence pitch
+## Proposed product
 
-**A small, expressive desktop companion you can actually make your own—offline, lightweight, and without surrendering your desktop to an AI service.**
+One local-first Deskling product with three capability areas:
 
-## Problem and opportunity (hypotheses, not established market facts)
+- **Companion:** existing expressive desktop character runtime.
+- **Creator:** existing Avatar Factory, Rust rig renderer and Qt Avatar Studio.
+- **Assist:** a hypothesis for useful, consent-based assistance with selected work context.
 
-Linux users who like desktop customization and expressive character experiences face a gap between decorative widgets, complicated DIY sprite workflows, and large app/agent experiences that require accounts or services. Deskling could bridge that with a friendly desktop presence and a repeatable toolchain for creating custom characters.
+Keep the offline companion useful without a model, account or connector.
 
-**Initial audience hypotheses:** Linux desktop tinkerers; makers/creators comfortable with local files; character artists/streamers who want a desktop companion. We have not validated demand, willingness to pay, target size, or organization fit. Do not claim product-market fit.
+## Audience hypotheses
 
-## Proposed user journey for an Iteration-2 demonstration
+**Initial validation audience:** Linux desktop enthusiasts, because the current runtime addresses their customization interests with the fewest new dependencies.
 
-1. Obtain a reproducible Ubuntu 24.04/X11 test build without altering an existing user setup.
-2. Launch a visibly appealing, authorized character, sized sensibly on screen.
-3. Watch fluid idle/gesture motion; click to interact, drag it, adjust size, pause and quit.
-4. Open a simple pack-selection path or documented workflow and swap to a second approved character. The user can recover if a pack is invalid.
-5. Launch Avatar Studio, change one rig keyframe and export a native pack. Run that pack in the desktop app.
-6. Show everything operating offline. Explain that optional future agent connectors are deliberately **not** present.
+**Secondary audience:** character creators, because the merged authoring tools may offer differentiation if the edit/export workflow is useful and approachable.
 
-The packaged candidate must not silently ship private/unlicensed art. The existing Kipwick alpha is a development asset, not automatically approved launch art. The synthetic rig is proof of a toolchain, not a production-quality character.
+**Strategic opportunity:** workplace users who might benefit from context-aware help. Actual demand, target platforms, trust, support and privacy obligations need investigation before product commitment.
 
-## Now / next / later
+These are architectural recommendations, not measured customer demand, market size, willingness to pay or organizational approval.
 
-| Now — next two iterations | Next — only after product gate | Later — optional |
-| --- | --- | --- |
-| Great first-run experience, polished approved character, real desktop validation, reproducible demo/install path, pack switching, explicit human UX review | Creator workflow polish, additional approved characters, performance tuning, accessibility, distribution decision | Local-agent integration adapters, events, customization ecosystem, Wayland path after a separate feasibility decision |
-| Keep local-first, no account, no telemetry | Validate audience, retention, cost, supportability | Permissioned plugin model, **never** silent desktop control |
+## Value to assess
 
-## What currently exists versus does not
+- Companion: enjoyable presence, control and voluntary return use.
+- Creator: successful creation/editing tasks with acceptable time and rework.
+- Assist: a specific task completed more easily or accurately without intrusive data processing.
 
-**Verified in repository:** Rust/Qt X11 runtime; validated inert PNG/JSON packs; Kipwick alpha and Cyber Gremlin study; Rust Avatar Factory; layered CPU rig renderer; Qt Avatar Studio; CI on merge commit `b41ff3d`.
+For Assist, compare synthetic scenarios and existing alternatives before choosing a model architecture. A screenshot preview is not screen understanding.
 
-**Not verified/implemented as a product claim:** general Ubuntu desktop interoperability beyond test setup; polished approved shipping character; packaged release or one-click installer; native X11 animation quality validated by actual desktop recording; automatic image-to-avatar creation; Wayland; AI connectors; commercial rights to artwork.
+## Evidence and gaps
 
-## What counts as success in the product conversation
+[Main README](../README.md) establishes the current Linux/X11 runtime and offline authoring foundation. PRs 4–6 were merged on 6 November 2026. [Technical baseline](TECHNICAL_BASELINE.md) maps actual components and trust boundaries.
 
-An authorized sponsor can watch a 90-second demo, explain the core value in one sentence, name an intended first audience, understand the limits and cost/risk, and decide to fund/authorize a pilot, request evidence, or stop. Engineering can show evidence rather than architecture promises.
+Live desktop behavior, consumer acceptance, broad operating-system support, approved shipping artwork, distributable packaging and service/support ownership remain separate gaps. No automatic portrait-to-avatar creation or agent connector is implemented in main.
 
-**Pilot feedback proposal (requires opt-in research):** have 3–5 prospective users independently launch and interact; record completion/friction and whether they would keep it installed. This small sample is *qualitative*, not statistical validation. Do not collect hidden telemetry.
+## Product conversation
 
-## Hard questions we want a sponsor to answer
+Present the current foundation, proposed consumer outcome, opportunity comparison, service model, constraints, adoption/support proposal and evidence gaps. Ask an accountable sponsor to choose a bounded pilot, further discovery or stop.
 
-- Who is Deskling for, and what user job are we committing to?
-- Is this an open-source community project, a licensed character product, an internal employee experiment, or a commercial offering?
-- Who owns brand, art licenses and permission to distribute?
-- Who funds support, maintenance, packaging and future compatibility?
-- What does a successful small pilot look like, and who can approve it?
+Do not assume the repository owner is the business sponsor. Do not translate interest into authorization for implementation, research outreach, company-data processing, deployment or release.
 
-See the [product conversation](PRODUCT_CONVERSATION.md) for decision record and meeting structure.
+See [two planning gates](ITERATION_PLAN.md), [opportunity roadmap](FEATURE_ROADMAP.md) and [product discussion guide](PRODUCT_CONVERSATION.md).

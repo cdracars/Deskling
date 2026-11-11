@@ -1,6 +1,6 @@
 # Deskling — Product Discussion & Organizational Utilization
 
-**Meeting status:** Proposed decision conversation, not a sales pitch promising an existing product.  
+**Meeting status:** ITIL 4/CSDM 5 planning decision conversation. No implementation or pilot is authorized by this document.  
 **Target:** End of Iteration 2.  
 **Meeting objective:** Decide whether an accountable sponsor should authorize a small, time-boxed user-discovery or pilot phase.
 
@@ -8,9 +8,9 @@
 
 1. **What it is (30 seconds).** Deskling is a local-first Linux desktop companion with expressive custom characters. It does not require an account, online model or intrusive system permissions.
 2. **Why anyone might care (45 seconds).** Personalization and desktop presence could make a small utility enjoyable. The premise is a hypothesis; we need to validate demand.
-3. **See it (90 seconds).** Launch, wave, drag, blink, resize, pause, change a character; edit a joint in Avatar Studio, export and run the result.
-4. **What's real (60 seconds).** Show the current source, merged Rust rig/Qt editor, exact-commit CI and recorded real-X11 evidence. Identify unfinished design and packaging work.
-5. **How it's built (60 seconds).** Explain four C4 views, native inert JSON/PNG packs, optional separate creator workflow and no cloud dependency. Future integrations are possibilities, not current abilities.
+3. **Evidence (90 seconds).** Present verified runtime/creator evidence and identify any missing live desktop demonstration. Do not imply that preparing the conversation authorizes new implementation.
+4. **What's real (60 seconds).** Show current source, merged Rust rig/Qt editor and exact-commit CI. Present real-X11 evidence only if available; otherwise label it unverified. Identify unfinished design and packaging work.
+5. **Product and service model (60 seconds).** Explain the proposed consumer outcomes, ITIL 4 value/risk assessment and CSDM 5 conceptual model. Use technical diagrams only if helpful. Future integrations remain possibilities, not current abilities.
 6. **How an organization might use it (60 seconds).** Present three **candidate** utilization modes below and their owners/risks. Do not assert that a specific employer has endorsed it.
 7. **The ask (60 seconds).** Identify business sponsor, art/IP rights owner and target audience; choose pilot/discovery, request more evidence, or stop.
 
@@ -47,7 +47,7 @@
 | Topic | Engineering can prepare | Human business/organizational decision |
 | --- | --- | --- |
 | User journey | Working code, recordings, test evidence, measured friction | Which audience/job to prioritize |
-| Architecture | C4, safe data boundaries, ADRs, operating costs/risks | Security exceptions or organizational deployment |
+| Architecture | ITIL 4 value assessment, CSDM 5 conceptual model, safe data boundaries, decisions and cost/risk drivers | Security exceptions or organizational deployment |
 | Character content | Synthetic demo and technically valid packs | Rights, licensed art, branding and launch approval |
 | Distribution | Reproducible test kit, documented dependency/runtime | Commercial model, release terms, maintenance funding |
 | Integrations | Proposed contracts and threat model, **not implemented** | Whether integrations are desirable and consent/compliance model |
@@ -67,8 +67,8 @@
 ## Evidence checklist for the presenter
 
 - [ ] Show exact revision and recent green CI run.
-- [ ] Show **real** Ubuntu 24.04/X11 video of launch, gestures, drag, controls and quit.
-- [ ] Show edited rig -> saved -> exported pack -> native runtime.
+- [ ] Present real Ubuntu 24.04/X11 evidence of launch, gestures, drag, controls and quit if recorded; otherwise mark the gap explicitly.
+- [ ] Present available edit -> save -> export -> runtime evidence and distinguish live observation from automated checks.
 - [ ] State which character images have explicit redistribution rights; mark others **not cleared**.
 - [ ] Show easy-to-follow clean start and cleanup, with prerequisites.
 - [ ] Show current limitations: no published release, no Wayland, no accounts/agent connectors, no automatic character art generation.
@@ -91,4 +91,4 @@ Open questions and risks:
 Next gate / owner / date:
 ```
 
-**Reference:** [Constitution](PRODUCT_CONSTITUTION.md) · [Brief](PRODUCT_BRIEF.md) · [C4](ARCHITECTURE_C4.md) · [Iteration plan](ITERATION_PLAN.md).
+**Reference:** [Constitution](PRODUCT_CONSTITUTION.md) · [Brief](PRODUCT_BRIEF.md) · [Service model](SERVICE_MODEL.md) · [Technical baseline](TECHNICAL_BASELINE.md) · [Iteration plan](ITERATION_PLAN.md).

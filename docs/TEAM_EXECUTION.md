@@ -1,9 +1,9 @@
-# Deskling — 3–4 Haiku Developer Delivery Operating Model
+# Deskling planning roles and conditional delivery model
 
-**Status:** Proposed execution contract, effective when an implementation team begins work.  
-**Working model:** Claude Haiku is the primary implementation model for three or four independent development lanes. ChatGPT acts as **lead architect, solution architect and lead developer**: sets architecture and acceptance contracts, owns cross-lane integration decisions, reviews risky changes and curates evidence for product discussion. No external agent is claimed to be running merely because this document exists.
+**Status:** Planning and strategy only. The implementation model below is conditional on explicit scoped authorization; no development agents or assignments are activated by this document.  
+**Conditional working model:** Claude Haiku is the proposed primary implementation model for three or four developers when implementation is authorized. The architect consolidates planning and stakeholder communication now. ChatGPT acts as **lead architect, solution architect and lead developer**: sets architecture and acceptance contracts, owns cross-lane integration decisions, reviews risky changes and curates evidence for product discussion. No external agent is claimed to be running merely because this document exists.
 
-## Team map and strict file ownership
+## Conditional implementation ownership
 
 | Lane | Primary responsibility | Normal owned paths | Avoid editing without coordination |
 | --- | --- | --- | --- |
@@ -12,27 +12,29 @@
 | **H3 — Creator path** | Avatar Studio usability and rig export journey | `tools/avatar-studio/`, `tools/avatar-factory/`, `tests/avatar_studio_test.cpp`, creator docs | Native runtime loader or pack schema without architect ADR |
 | **H4 — Trial, QA and release evidence** | Reproducible Ubuntu demo, test harness and independent X11 validation | `scripts/`, `.github/workflows/`, `docs/VERIFICATION.md`, `tests/test_launcher.py`, evidence ledger | Runtime/artist source edits; H1–H3 feature branches |
 
-**If only three developers:** H4 owns first-use demo and QA; H2 temporarily owns motion plus visual tests; H1 owns runtime; H3 owns Studio. Lead developer coordinates independent verification and product evidence. If capacity is insufficient, defer lower-priority features rather than mixing file ownership.
+**If only three developers:** one owns runtime UX and coordinated motion work, one owns creator tools, and one owns trial/QA. Defer lower-priority scope instead of assigning four simultaneous lanes. Another implementer or the lead independently reviews the trial/QA owner's changes.
 
 ## Lead architect/developer operating contract
 
-- Own and maintain constitution, C4, ADRs, public API/pack boundaries and product-to-feature traceability.
+- Own ITIL 4/CSDM 5 planning, the constitution, decision register, product-to-capability traceability and technical recommendations. Technical diagrams are optional supporting evidence.
 - Convert product hypotheses into acceptance criteria; make routine reversible technical decisions without asking the repository owner to act as the business.
-- Assign non-overlapping feature tasks and define integration order. Prefer one scoped branch and PR per lane; no direct-to-main work.
+- After explicit implementation authorization, assign non-overlapping feature tasks and define integration order. Prefer one scoped branch and PR per lane; no direct-to-main work.
 - Set test evidence expectations and verify results instead of trusting agent summaries. Preserve first failing regression for defect fixes.
 - Resolve cross-boundary changes (pack format, native Rust/Qt API, persistence semantics), review tests and own final integration recommendation.
 - Consolidate reports into an evidence ledger and product-discussion packet. No automatic merging, deploying, publishing or licensing approval.
 
 ## Haiku task contract — required for every assigned issue
 
-Each assigned Haiku thread must receive:
+Only after explicit implementation authorization, each assigned Haiku thread must receive:
 
 ```text
 Deskling development task
 Repository: cdracars/Deskling
 Base: latest main (verify HEAD before editing)
 Constitution: docs/PRODUCT_CONSTITUTION.md
-C4: docs/ARCHITECTURE_C4.md
+Service model: docs/SERVICE_MODEL.md
+Optional technical evidence: docs/TECHNICAL_BASELINE.md
+Explicit implementation authorization: [scope and source]
 Roadmap: docs/FEATURE_ROADMAP.md
 Assigned issue: [GitHub link]
 Owner lane / allowed paths: [one lane]
@@ -51,7 +53,7 @@ risks, and a short reviewer checklist. No merge or release.
 
 ## Delivery states and independent verification
 
-- `ready`: scope, owner, acceptance and test method identified.
+- `ready`: explicit implementation authorization, scope, owner, acceptance and test method identified.
 - `working`: branch/PR opened; first test/fixture evidence captured.
 - `review`: code plus exact-commit tests and artifacts are linked.
 - `verified`: independent reviewer checked expected behavior and residual risks.
@@ -77,12 +79,8 @@ The implementation agent must not be its sole acceptance reviewer. H4 can provid
 
 At the end of each iteration, record: what users demonstrably accomplished, cycle time/defects, original failures preserved, friction in developer/Haiku workflow, technical debt, what was deferred and what to adjust. Feed changes into the roadmap or a reviewed constitution amendment. The retrospective is evidence, not self-congratulation.
 
-## Immediate work order
+## Current planning work
 
-1. H4: isolated user-facing demo entry and real X11 validation matrix.
-2. H1: safe local character selection/first-run controls, protecting `--pack` and current loader.
-3. H2: baseline and top visible Kipwick motion defects, original art unchanged until approved.
-4. H3: five-minute visual editor walkthrough and evidence of edit -> save -> export -> run.
-5. Lead architect: review each handoff, run integration gate and prepare Iteration-1 demo; update product brief from actual evidence.
+Reconcile current evidence, compare consumer outcomes, prepare the opportunity backlog, identify ownership and rights gaps, and assemble the two planning gates. Existing issues and PRs are evidence and candidate scope, not instructions to launch development.
 
-A small number of fully verified user-visible improvements is better than many partially complete speculative features.
+See [service model](SERVICE_MODEL.md), [iteration plan](ITERATION_PLAN.md) and [product discussion](PRODUCT_CONVERSATION.md). Routine planning decisions should not require the technical stakeholder to act as business sponsor or manage individual lanes.
