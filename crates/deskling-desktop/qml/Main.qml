@@ -183,6 +183,13 @@ Window {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         hoverEnabled: true
+        // Quiet first-use discovery: delayed while hovering, never grabs focus.
+        // The shared Qt Quick Controls tooltip is hidden during drag and when
+        // the controls panel is already open.
+        ToolTip.visible: containsMouse && !pressed && !pet.dragging && !controls.visible
+        ToolTip.delay: 1200
+        ToolTip.timeout: 4500
+        ToolTip.text: "Click to wave · drag to move · right-click for controls"
         cursorShape: pressed && pet.dragging ? Qt.ClosedHandCursor : Qt.OpenHandCursor
         property point pressPoint: Qt.point(0, 0)
         property bool moved: false
