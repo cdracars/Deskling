@@ -319,6 +319,12 @@ Window {
                     enabled: bridge.screenReviewReady
                     onClicked: bridge.copyScreenReview()
                 }
+                Button {
+                    objectName: "openSavedLinkAfterReviewButton"
+                    text: "Open saved browser link"
+                    enabled: bridge.linkUrl.length > 0
+                    onClicked: bridge.openLink()
+                }
                 Item { Layout.fillWidth: true }
                 Button {
                     objectName: "discardScreenReviewButton"
